@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "Real Estate Mate",
     "description": "Show the hidden price range on realestate.com.au",
-    "version": "0.2",
+    "version": "0.3",
     "icons": {
         "128": "logo/logo-128.png"
     },
@@ -11,9 +11,6 @@
         "default_title": "Real Estate Mate",
         "default_popup": "popup/popup.html"
     },
-    "permissions": [
-        "activeTab"
-    ],
     "content_scripts": [{
         "js": ["priceRange.js"],
         "matches": ["https://www.realestate.com.au/property*"]
