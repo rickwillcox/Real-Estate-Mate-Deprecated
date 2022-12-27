@@ -1,19 +1,33 @@
 {
-    "manifest_version": 3,
-    "name": "Real Estate Mate",
-    "description": "Show the hidden price range on realestate.com.au",
-    "version": "0.4",
-    "icons": {
-        "128": "logo/logo-128.png"
-    },
-    "options_page": "settings/settings.html",
-    "action": {
-        "default_title": "Real Estate Mate",
-        "default_popup": "popup/popup.html"
-    },
-    "host_permissions": ["https://www.domain.com.au/*"],
-    "content_scripts": [{
-        "js": ["priceRange.js"],
-        "matches": ["https://www.realestate.com.au/property*"]
-    }]
+  "manifest_version": 3,
+  "name": "Real Estate Mate",
+  "description": "Show the hidden price range on realestate.com.au",
+  "version": "0.4",
+  "icons": {
+    "128": "logo/logo-128.png"
+  },
+  "options_page": "settings/settings.html",
+  "action": {
+    "default_title": "Real Estate Mate",
+    "default_popup": "popup/popup.html"
+  },
+  "host_permissions": [
+    "https://www.domain.com.au/*",
+    "https://www.commbank.com.au/digital/home-buying/property/*"
+  ],
+  "content_scripts": [
+    {
+      "js": ["foreground.js"],
+      "matches": ["https://www.realestate.com.au/property*"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "matches": ["<all_urls>"],
+      "resources": ["logo/logo-128.png"]
+    }
+  ]
 }
