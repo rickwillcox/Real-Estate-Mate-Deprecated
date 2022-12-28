@@ -15,7 +15,7 @@ async function getDomainLink(searchTerm) {
   );
   const regex = /<a href="(https:\/\/www\.domain\.com\.au\/\d+-.*-\d+-\d+)">/;
   const matches = pageSource.match(regex);
-  const domainLink = matches[1].split('"')[0];
+  const domainLink = matches !== null ? matches[1].split('"')[0] : null;
   console.log(domainLink);
   return domainLink;
 }
@@ -24,7 +24,7 @@ async function getDomainPropertyId(domainLink) {
   const pageSource = await getPageSource(domainLink);
   const regex = /propertyId":"(.+?)"/;
   const matches = pageSource.match(regex);
-  const domainPropertyId = matches[1].split('"')[0];
+  const domainPropertyId = matches !== null ? matches[1].split('"')[0] : null;
   console.log(domainPropertyId);
   return domainPropertyId;
 }
@@ -35,20 +35,36 @@ async function getCommBankPriceEval(domainPropertyId) {
   );
   const regex = /displayPrice&quot;:\&quot;\$(\d+,\d+)\&/;
   const matches = pageSource.match(regex);
-  const commBankPriceEval = matches[1].split('"')[0];
-  console.log(commBankPriceEval);
+  const commBankPriceEval = matches !== null ? matches[1].split('"')[0] : null;
   return commBankPriceEval;
 }
 
 async function commBankHelper(address) {
+  let domainLink = null;
+  let domainPropertyId = null;
+  let commBankPriceEval = null;
+
   try {
-    const domainLink = await getDomainLink(address);
-    const domainPropertyId = await getDomainPropertyId(domainLink);
-    const commBankPriceEval = await getCommBankPriceEval(domainPropertyId);
+    domainLink = await getDomainLink(address);
+    console.log("domainLink", domainLink);
+    if (domainLink === null) {
+      throw new Error("Failed to get domain link");
+    }
+
+    domainPropertyId = await getDomainPropertyId(domainLink);
+    console.log("domainPropertyId", domainPropertyId);
+    if (domainPropertyId === null) {
+      throw new Error("Failed to get domain property ID");
+    }
+  } catch (error) {
+    console.error(error);
     return [commBankPriceEval, domainPropertyId];
-  } catch {
-    return [null, null];
   }
+
+  commBankPriceEval = await getCommBankPriceEval(domainPropertyId);
+  console.log("commBankPriceEval", commBankPriceEval);
+
+  return [commBankPriceEval, domainPropertyId];
 }
 
 async function nbnHelper(address) {
@@ -61,12 +77,16 @@ async function nbnHelper(address) {
   address = address.replace(/ /g, "+");
   console.log("nbn helper", address);
 
-  const nbnData = await fetch(
-    `https://nbn-service-check.deta.dev/check?address=${address}`
-  );
-  const data = await nbnData.json();
-  console.log("nbn data", data);
-  return data.body;
+  try {
+    const nbnData = await fetch(
+      `https://nbn-service-check.deta.dev/check?address=${address}`
+    );
+    const data = await nbnData.json();
+    console.log("nbn data", data);
+    return data.body;
+  } catch {
+    return null;
+  }
 }
 
 chrome.runtime.onMessage.addListener(function async(
@@ -117,10 +137,4 @@ async function processForegroundFunction(func) {
   chrome.tabs.sendMessage(func.args.tabId, msg);
 }
 
-// async function sendMessageToActiveTab(msg) {
-//   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-//     console.log("replying to forground", msg.functionName, tabs);
-
-//     chrome.tabs.sendMessage(tabs[0].id, msg);
-//   });
-// }
+//

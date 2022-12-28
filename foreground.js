@@ -20,23 +20,6 @@ function addStylesToDom() {
     transform: scale(0.8);
   }
 }
-@keyframes roll-forward {
-  from {
-    transform: translateX(-100%) rotate(0deg);
-  }
-  to {
-    transform: translateX(calc(100% + 50px)) rotate(360deg);
-  }
-}
-
-@keyframes roll-backward {
-  from {
-    transform: translateX(calc(100% + 50px)) rotate(360deg);
-  }
-  to {
-    transform: translateX(-100%) rotate(0deg);
-  }
-}
 `;
   document.head.appendChild(style);
 }
@@ -71,21 +54,29 @@ function addPriceRangeToDom() {
 function addBankEstToDom(data) {
   const estimate = data[0];
   const domainId = data[1];
+  const link = `https://www.commbank.com.au/digital/home-buying/property/${domainId}?byAddress=true`;
   console.log(estimate, domainId);
   if (getCommbankPriceComplete) return;
   getCommbankPriceComplete = true;
-  if (!estimate) {
-    document.getElementsByClassName(
-      "real-estate-mate-bank-est"
-    )[0].innerHTML += ` No Estimate`;
-    return;
-  }
   document.getElementsByClassName(
     "real-estate-mate-bank-est"
-  )[0].innerHTML += ` <a  style="color: blue" target="blank" href="https://www.commbank.com.au/digital/home-buying/property/${domainId}?byAddress=true"> $${estimate}</a>`;
+  )[0].innerHTML += ` <a  style="color: blue" target="blank" href="${link}"> ${
+    estimate === null ? "Not Available" : "$" + estimate
+  }</a>`;
 }
 
 function addNbnToDom(data) {
+  getNbnDataComplete = true;
+
+  if (!data) {
+    console.log("Not Available");
+    const internetElement = document.querySelector(
+      ".real-estate-mate-internet"
+    );
+    internetElement.innerHTML = `Internet:  <a  style="color: blue" target="blank" href="https://www.nbnco.com.au/connect-home-or-business/check-your-address">Not Available</a>`;
+    return;
+  }
+  //https://www.nbnco.com.au/connect-home-or-business/check-your-address
   let primaryAccessTechnology = data.primaryAccessTechnology;
   const speed = data.speed;
   const lowerSpeed = data.lowerSpeed;
@@ -124,14 +115,7 @@ function addNbnToDom(data) {
         "https://www.nbnco.com.au/learn/network-technology";
       primaryAccessTechnology = "N/A";
   }
-  console.log(
-    primaryAccessTechnology,
-    primaryAccessTechnologyLink,
-    speed,
-    coExistance
-  );
 
-  getNbnDataComplete = true;
   let list = document.getElementsByClassName(
     "real-estate-mate-internet-list"
   )[0];
@@ -222,7 +206,7 @@ chrome.runtime.onMessage.addListener(function (msg, callback) {
       console.log("😋, foreground data getTabId", msg.data);
       backgroundFunctions.getCommbankPrice.args.tabId = msg.data;
       backgroundFunctions.getNbnData.args.tabId = msg.data;
-      initRealEstateMate();
+      if (!allFetchingComplete) initRealEstateMate();
       break;
     }
     case "onTabUpdated": {
@@ -230,7 +214,8 @@ chrome.runtime.onMessage.addListener(function (msg, callback) {
       tabId = msg.data;
       backgroundFunctions.getCommbankPrice.args.tabId = msg.data;
       backgroundFunctions.getNbnData.args.tabId = msg.data;
-      initRealEstateMate();
+      if (!allFetchingComplete) initRealEstateMate();
+
       break;
     }
     case "getCommbankPrice": {
@@ -251,14 +236,12 @@ chrome.runtime.onMessage.addListener(function (msg, callback) {
 
 let getCommbankPriceComplete = false;
 let getNbnDataComplete = false;
+let allFetchingComplete = false;
 
 async function initRealEstateMate() {
-  getCommbankPriceComplete = false;
-  getNbnDataComplete = false;
   addStylesToDom();
   addRealEstateMateContainer();
   addPriceRangeToDom();
-
   chrome.runtime.sendMessage(backgroundFunctions.getCommbankPrice);
   chrome.runtime.sendMessage(backgroundFunctions.getNbnData);
 }
@@ -268,9 +251,8 @@ function checkAllFetchComplete() {
   if (!getNbnDataComplete) return;
   spinLogo();
   showInformation();
+  allFetchingComplete = true;
 }
-
-const img = document.getElementsByClassName("real-estate-mate-logo")[0];
 
 function spinLogo() {
   const img = document.getElementsByClassName("real-estate-mate-logo")[0];
