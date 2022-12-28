@@ -2,10 +2,28 @@ body {
     background-color: #222;
     color: #eee;
 
-    width: 16rem;
-    height: 4rem;
+    padding: 0.5rem;
+    width: 18rem;
 }
 
-.special-text {
-    color: red;
+h1,
+h2 {
+    font-weight: bold;
+}
+
+.image {
+    float: left;
+    margin-right: 0.5rem;
+}
+
+.link {
+    color: blue;
+}
+.disclaimer {
+    font-size: smaller;
+    color: #999;
+}
+.tagline {
+    font-style: italic;
+    font-size: small;
 }

@@ -26,7 +26,6 @@ function addStylesToDom() {
 
 function addRealEstateMateContainer() {
   if (document.getElementsByClassName("real-estate-mate").length > 0) {
-    //remove it
     document.getElementsByClassName("real-estate-mate")[0].remove();
   }
   document.getElementsByClassName(
@@ -44,18 +43,29 @@ function addRealEstateMateContainer() {
 }
 
 function addPriceRangeToDom() {
+  const regex =
+    /marketing_price_range\\\\\\\\\\\\\\":\\\\\\\\\\\\\\"(.*?)\\\\\\\\\\\\\\"/;
+  const matches = document.documentElement.innerHTML.match(regex);
+
+  if (matches === null) {
+    document.getElementsByClassName(
+      "real-estate-mate-price-range"
+    )[0].innerHTML += `No price range available`;
+    return;
+  }
   document.getElementsByClassName(
     "real-estate-mate-price-range"
-  )[0].innerHTML += `${document.documentElement.innerHTML
-    .match(/\d+(\.\d+)?(m|k)_\d+(\.\d+)?(m|k)/)[0]
-    .replace("_", " - ")}`;
+  )[0].innerHTML += `${matches[1].replace("_", " - ")}`;
 }
 
 function addBankEstToDom(data) {
   const estimate = data[0];
   const domainId = data[1];
-  const link = `https://www.commbank.com.au/digital/home-buying/property/${domainId}?byAddress=true`;
-  console.log(estimate, domainId);
+
+  let link = `https://www.commbank.com.au/digital/home-buying/property/${domainId}?byAddress=true`;
+  if (!domainId) {
+    link = "https://www.commbank.com.au/digital/home-buying/search";
+  }
   if (getCommbankPriceComplete) return;
   getCommbankPriceComplete = true;
   document.getElementsByClassName(
@@ -69,14 +79,12 @@ function addNbnToDom(data) {
   getNbnDataComplete = true;
 
   if (!data) {
-    console.log("Not Available");
     const internetElement = document.querySelector(
       ".real-estate-mate-internet"
     );
     internetElement.innerHTML = `Internet:  <a  style="color: blue" target="blank" href="https://www.nbnco.com.au/connect-home-or-business/check-your-address">Not Available</a>`;
     return;
   }
-  //https://www.nbnco.com.au/connect-home-or-business/check-your-address
   let primaryAccessTechnology = data.primaryAccessTechnology;
   const speed = data.speed;
   const lowerSpeed = data.lowerSpeed;
@@ -113,43 +121,45 @@ function addNbnToDom(data) {
     default:
       primaryAccessTechnologyLink =
         "https://www.nbnco.com.au/learn/network-technology";
-      primaryAccessTechnology = "N/A";
   }
 
   let list = document.getElementsByClassName(
     "real-estate-mate-internet-list"
   )[0];
-  const blackSquare =
-    "url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNCIgaGVpZ2h0PSIxNCI+PHJlY3Qgd2lkdGg9IjE0IiBoZWlnaHQ9IjE0IiBmaWxsPSJibGFjayIvPjwvc3ZnPg==)";
 
   if (speed) {
     let speedItem = document.createElement("li");
-    speedItem.textContent = `${speed} mbps`;
-    speedItem.style.color =
-      speed < 25 ? "red" : speed < 50 ? "orange" : "green";
     if (lowerSpeed && upperSpeed) {
-      speedItem.textContent = `${lowerSpeed} - ${upperSpeed} mbps`;
-      speedItem.style.color =
-        upperSpeed < 25 ? "red" : upperSpeed < 50 ? "orange" : "green";
+      speedItem.innerHTML = `<h6>Speed: <span style="color: ${
+        upperSpeed < 25 ? "red" : upperSpeed < 50 ? "orange" : "green"
+      };">${lowerSpeed} - ${upperSpeed} mbps</span></h6>`;
+    } else {
+      speedItem.innerHTML = `<h6>Speed: <span style="color: ${
+        speed < 25 ? "red" : speed < 50 ? "orange" : "green"
+      };">${speed} mbps</span></h6>`;
     }
 
-    speedItem.style.listStyleImage = blackSquare;
     list.appendChild(speedItem);
   }
 
   if (primaryAccessTechnology) {
     let primaryAccessTechnologyItem = document.createElement("li");
-    primaryAccessTechnologyItem.style.listStyleImage = blackSquare;
-    primaryAccessTechnologyItem.innerHTML = `<a  style="color: blue" target="blank" href="${primaryAccessTechnologyLink}">${primaryAccessTechnology}</a>`;
+    primaryAccessTechnologyItem.innerHTML += "Connection: ";
+    primaryAccessTechnologyItem.innerHTML += `<a  style="color: blue" target="blank" href="${primaryAccessTechnologyLink}">${primaryAccessTechnology}</a>`;
     list.appendChild(primaryAccessTechnologyItem);
   }
 
-  if (coExistance) {
-    let coExistanceItem = document.createElement("li");
-    coExistanceItem.style.listStyleImage = blackSquare;
-    coExistanceItem.innerHTML = `<a  style="color: red" target="blank" href="https://help.australiabroadband.com.au/support/solutions/articles/44000688641-what-is-co-existence-and-why-does-it-affect-my-internet-speed-">Co-Existance</a>`;
-    list.appendChild(coExistanceItem);
-  }
+  let coExistanceItem = document.createElement("li");
+  coExistanceItem.innerHTML += "Co-Existance: ";
+  coExistanceItem.innerHTML += `<a  style="color: ${
+    coExistance ? "red" : "green"
+  }" target="blank" href="https://help.australiabroadband.com.au/support/solutions/articles/44000688641-what-is-co-existence-and-why-does-it-affect-my-internet-speed-">${
+    coExistance ? "Yes" : "No"
+  }</a>`;
+  coExistanceItem.innerHTML += `<span style="color: ${
+    coExistance ? "red" : "green"
+  }">${coExistance ? "  :(" : "  :)"}</span>`;
+  list.appendChild(coExistanceItem);
 }
 
 function createGetAddressFunction() {
@@ -176,10 +186,6 @@ function createGetAddressFunction() {
 
 const getAddress = createGetAddressFunction();
 const backgroundFunctions = {
-  onTabActivated: {
-    name: "onTabActivated",
-    args: null,
-  },
   onTabUpdated: {
     name: "onTabUpdated",
     args: null,
@@ -200,17 +206,9 @@ const backgroundFunctions = {
   },
 };
 
-chrome.runtime.onMessage.addListener(function (msg, callback) {
+chrome.runtime.onMessage.addListener(function (msg) {
   switch (msg.functionName) {
-    case "onTabActivated": {
-      console.log("😋, foreground data getTabId", msg.data);
-      backgroundFunctions.getCommbankPrice.args.tabId = msg.data;
-      backgroundFunctions.getNbnData.args.tabId = msg.data;
-      if (!allFetchingComplete) initRealEstateMate();
-      break;
-    }
     case "onTabUpdated": {
-      console.log("😋, foreground data onTabUpdated", msg.data);
       tabId = msg.data;
       backgroundFunctions.getCommbankPrice.args.tabId = msg.data;
       backgroundFunctions.getNbnData.args.tabId = msg.data;
@@ -219,12 +217,10 @@ chrome.runtime.onMessage.addListener(function (msg, callback) {
       break;
     }
     case "getCommbankPrice": {
-      console.log("😋, foreground data getCommbankPrice", msg.data);
       addBankEstToDom(msg.data);
       break;
     }
     case "getNbnData": {
-      console.log("😋, foreground data getNbnData", msg.data);
       addNbnToDom(msg.data);
     }
     default:
