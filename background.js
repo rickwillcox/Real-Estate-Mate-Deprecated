@@ -77,26 +77,57 @@ chrome.runtime.onMessage.addListener(function async(
   processForegroundFunction(func);
 });
 
+chrome.tabs.onActivated.addListener(function callback(activeInfo) {
+  chrome.tabs.get(activeInfo.tabId, function (tab) {
+    const msg = {};
+    msg.functionName = "onTabActivated";
+    msg.data = tab.id;
+    console.log("replying to onTabActivated", msg.functionName, tab);
+    chrome.tabs.sendMessage(tab.id, msg);
+  });
+});
+
+// I also need to do the same as above if they just click into it via a link
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+  if (changeInfo.status === "complete") {
+    const msg = {};
+    msg.functionName = "onTabUpdated";
+    msg.data = tab.id;
+    console.log("replying to onTabUpdated", msg.functionName, tab);
+    chrome.tabs.sendMessage(tab.id, msg);
+  }
+});
+
 async function processForegroundFunction(func) {
   const msg = {};
+  console.log("!!!!", func);
   switch (func.name) {
+    case "getTabId":
+      msg.functionName = func.name;
+      msg.data = await chrome.tabs.query({}, function (tabs) {
+        console.log("replying to getTabId", msg.functionName, tabs);
+        return tabs[0].id;
+      });
     case "getCommbankPrice":
       msg.functionName = func.name;
-      msg.data = await commBankHelper(func.args);
+      msg.data = await commBankHelper(func.args.address);
       break;
     case "getNbnData":
       msg.functionName = func.name;
-      msg.data = await nbnHelper(func.args);
+      msg.data = await nbnHelper(func.args.address);
       break;
     default:
       break;
   }
-  sendMessageToActiveTab(msg);
+  // sendMessageToActiveTab(msg, tabId);
+  console.log("ebfore send message", msg, tabId);
+  chrome.tabs.sendMessage(func.args.tabId, msg);
 }
 
 async function sendMessageToActiveTab(msg) {
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    console.log("replying to forground", msg.functionName);
+    console.log("replying to forground", msg.functionName, tabs);
+
     chrome.tabs.sendMessage(tabs[0].id, msg);
   });
 }

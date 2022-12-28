@@ -42,6 +42,10 @@ function addStylesToDom() {
 }
 
 function addRealEstateMateContainer() {
+  if (document.getElementsByClassName("real-estate-mate").length > 0) {
+    //remove it
+    document.getElementsByClassName("real-estate-mate")[0].remove();
+  }
   document.getElementsByClassName(
     "property-info__middle-content"
   )[0].innerHTML += ` 
@@ -189,20 +193,47 @@ function createGetAddressFunction() {
 }
 
 const getAddress = createGetAddressFunction();
-
+let tabId = null;
 const backgroundFunctions = {
+  getTabId: {
+    name: "onTabActivated",
+    args: null,
+  },
+  onTabUpdated: {
+    name: "onTabUpdated",
+    args: null,
+  },
   getCommbankPrice: {
     name: "getCommbankPrice",
-    args: getAddress(),
+    args: {
+      address: getAddress(),
+      tabId: tabId,
+    },
   },
   getNbnData: {
     name: "getNbnData",
-    args: getAddress(),
+    args: {
+      address: getAddress(),
+      tabId: tabId,
+    },
   },
 };
 
 chrome.runtime.onMessage.addListener(function (msg, callback) {
   switch (msg.functionName) {
+    case "onTabActivated": {
+      console.log("😋, foreground data getTabId", msg.data);
+      tabId = msg.data;
+      initRealEstateMate();
+      break;
+    }
+    case "onTabUpdated": {
+      console.log("😋, foreground data onTabUpdated", msg.data);
+      tabId = msg.data;
+
+      initRealEstateMate();
+      break;
+    }
     case "getCommbankPrice": {
       console.log("😋, foreground data getCommbankPrice", msg.data);
       addBankEstToDom(msg.data);
@@ -223,9 +254,12 @@ let getCommbankPriceComplete = false;
 let getNbnDataComplete = false;
 
 async function initRealEstateMate() {
+  getCommbankPriceComplete = false;
+  getNbnDataComplete = false;
   addStylesToDom();
   addRealEstateMateContainer();
   addPriceRangeToDom();
+
   chrome.runtime.sendMessage(backgroundFunctions.getCommbankPrice);
   chrome.runtime.sendMessage(backgroundFunctions.getNbnData);
 }
@@ -233,11 +267,8 @@ async function initRealEstateMate() {
 function checkAllFetchComplete() {
   if (!getCommbankPriceComplete) return;
   if (!getNbnDataComplete) return;
-  // setTimeout(startSpin, 750);
   startSpin();
 }
-
-initRealEstateMate();
 
 const img = document.getElementsByClassName("real-estate-mate-logo")[0];
 
@@ -254,14 +285,6 @@ img.addEventListener("animationend", function () {
     element.style.opacity = "1";
     element.style.height = "auto";
   });
-
-  // priceRangeElement.style.visibility = "visible";
-  // priceRangeElement.style.opacity = "1";
-  // bankEstElement.style.visibility = "visible";
-  // bankEstElement.style.opacity = "1";
-  // bankEstElement.style.height = "auto";
-  // internetElement.style.visibility = "visible";
-  // internetElement.style.opacity = "1";
 });
 
 function startSpin() {
