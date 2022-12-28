@@ -153,8 +153,6 @@ function addNbnToDom(data) {
     list.appendChild(speedItem);
   }
 
-  //change the color of only the text not the dot point
-
   if (primaryAccessTechnology) {
     let primaryAccessTechnologyItem = document.createElement("li");
     primaryAccessTechnologyItem.style.listStyleImage = blackSquare;
@@ -193,9 +191,8 @@ function createGetAddressFunction() {
 }
 
 const getAddress = createGetAddressFunction();
-let tabId = null;
 const backgroundFunctions = {
-  getTabId: {
+  onTabActivated: {
     name: "onTabActivated",
     args: null,
   },
@@ -207,14 +204,14 @@ const backgroundFunctions = {
     name: "getCommbankPrice",
     args: {
       address: getAddress(),
-      tabId: tabId,
+      tabId: null,
     },
   },
   getNbnData: {
     name: "getNbnData",
     args: {
       address: getAddress(),
-      tabId: tabId,
+      tabId: null,
     },
   },
 };
@@ -223,14 +220,16 @@ chrome.runtime.onMessage.addListener(function (msg, callback) {
   switch (msg.functionName) {
     case "onTabActivated": {
       console.log("😋, foreground data getTabId", msg.data);
-      tabId = msg.data;
+      backgroundFunctions.getCommbankPrice.args.tabId = msg.data;
+      backgroundFunctions.getNbnData.args.tabId = msg.data;
       initRealEstateMate();
       break;
     }
     case "onTabUpdated": {
       console.log("😋, foreground data onTabUpdated", msg.data);
       tabId = msg.data;
-
+      backgroundFunctions.getCommbankPrice.args.tabId = msg.data;
+      backgroundFunctions.getNbnData.args.tabId = msg.data;
       initRealEstateMate();
       break;
     }
@@ -267,12 +266,21 @@ async function initRealEstateMate() {
 function checkAllFetchComplete() {
   if (!getCommbankPriceComplete) return;
   if (!getNbnDataComplete) return;
-  startSpin();
+  spinLogo();
+  showInformation();
 }
 
 const img = document.getElementsByClassName("real-estate-mate-logo")[0];
 
-img.addEventListener("animationend", function () {
+function spinLogo() {
+  const img = document.getElementsByClassName("real-estate-mate-logo")[0];
+  img.style.animationName = "none";
+  img.style.animationName = "spin";
+  img.style.animationIterationCount = "1";
+  img.style.animationDuration = "0.5s";
+}
+
+function showInformation() {
   const priceRangeElement = document.querySelector(
     ".real-estate-mate-price-range"
   );
@@ -285,11 +293,4 @@ img.addEventListener("animationend", function () {
     element.style.opacity = "1";
     element.style.height = "auto";
   });
-});
-
-function startSpin() {
-  img.style.animationName = "none";
-  img.style.animationName = "spin";
-  img.style.animationIterationCount = "1";
-  img.style.animationDuration = "0.5s";
 }

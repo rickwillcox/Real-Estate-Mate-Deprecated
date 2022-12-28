@@ -87,7 +87,6 @@ chrome.tabs.onActivated.addListener(function callback(activeInfo) {
   });
 });
 
-// I also need to do the same as above if they just click into it via a link
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   if (changeInfo.status === "complete") {
     const msg = {};
@@ -99,15 +98,9 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 });
 
 async function processForegroundFunction(func) {
+  console.log(func.name, func.args.tabId);
   const msg = {};
-  console.log("!!!!", func);
   switch (func.name) {
-    case "getTabId":
-      msg.functionName = func.name;
-      msg.data = await chrome.tabs.query({}, function (tabs) {
-        console.log("replying to getTabId", msg.functionName, tabs);
-        return tabs[0].id;
-      });
     case "getCommbankPrice":
       msg.functionName = func.name;
       msg.data = await commBankHelper(func.args.address);
@@ -120,14 +113,14 @@ async function processForegroundFunction(func) {
       break;
   }
   // sendMessageToActiveTab(msg, tabId);
-  console.log("ebfore send message", msg, tabId);
+  console.log("before send message", msg, func.args.tabId);
   chrome.tabs.sendMessage(func.args.tabId, msg);
 }
 
-async function sendMessageToActiveTab(msg) {
-  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    console.log("replying to forground", msg.functionName, tabs);
+// async function sendMessageToActiveTab(msg) {
+//   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+//     console.log("replying to forground", msg.functionName, tabs);
 
-    chrome.tabs.sendMessage(tabs[0].id, msg);
-  });
-}
+//     chrome.tabs.sendMessage(tabs[0].id, msg);
+//   });
+// }
