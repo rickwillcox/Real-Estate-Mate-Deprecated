@@ -79,6 +79,7 @@ chrome.runtime.onMessage.addListener(function async(
   sender,
   sendResponse
 ) {
+  console.log("background.js", func);
   processForegroundFunction(func);
 });
 
@@ -97,19 +98,93 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 
 async function processForegroundFunction(func) {
   const msg = {};
+  console.log(func);
   switch (func.name) {
     case "getCommbankPrice":
       msg.functionName = func.name;
       msg.data = await commBankHelper(func.args.address);
+      chrome.tabs.sendMessage(func.args.tabId, msg);
       break;
     case "getNbnData":
       msg.functionName = func.name;
       msg.data = await nbnHelper(func.args.address);
+      chrome.tabs.sendMessage(func.args.tabId, msg);
       break;
+    case "updateBackend":
+      console.log("UPDATING BACKEND TRIGGERSS");
+      console.log("updating backend", func.args);
+      await updateRealEstateListing(
+        func.args.address,
+        func.args.link,
+        func.args.price,
+        func.args.minPrice,
+        func.args.maxPrice,
+        func.args.title
+      );
+
     default:
       break;
   }
-  chrome.tabs.sendMessage(func.args.tabId, msg);
 }
 
 //
+
+function createNewComment(comment, address) {
+  fetch("http://localhost:3000/createNewComment", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      comment: comment,
+      realEstateListingAddress: address,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // do something with the response data
+    })
+    .catch((error) => {
+      // handle any errors
+    });
+}
+
+function updateRealEstateListing(
+  address,
+  link,
+  price,
+  minPrice,
+  maxPrice,
+  title
+) {
+  console.log(
+    "updating real estate listing",
+    address,
+    link,
+    price,
+    minPrice,
+    maxPrice,
+    title
+  );
+  fetch("http://localhost:3000/updateRealEstateListing", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      address: address,
+      link: link,
+      price: price,
+      minPrice: minPrice,
+      maxPrice: maxPrice,
+      title: title,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      // do something with the response data
+    })
+    .catch((error) => {
+      // handle any errors
+    });
+}

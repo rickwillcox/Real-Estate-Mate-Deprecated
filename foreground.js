@@ -41,6 +41,11 @@ function addRealEstateMateContainer() {
     <div class="real-estate-mate-internet" style="visibility: hidden; opacity: 0; transition: opacity 1s ease-in-out; height: 0">Internet: <ul class="real-estate-mate-internet-list" style="list-style-type: disc; padding-left: 40px"></ul></div>
   </div>`;
 }
+// how can I get the current url that the user is on
+function getUrlFromPage() {
+  const url = window.location.href;
+  return url;
+}
 
 function addPriceRangeToDom() {
   const regex =
@@ -56,6 +61,15 @@ function addPriceRangeToDom() {
   document.getElementsByClassName(
     "real-estate-mate-price-range"
   )[0].innerHTML += `${matches[1].replace("_", " - ")}`;
+
+  let split_price = matches[1].split("_");
+  if (split_price.length === 2) {
+    backgroundFunctions.updateBackend.args.minPrice = split_price[0];
+    backgroundFunctions.updateBackend.args.maxPrice = split_price[1];
+  } else {
+    backgroundFunctions.updateBackend.args.minPrice = split_price[0];
+    backgroundFunctions.updateBackend.args.maxPrice = split_price[0];
+  }
 }
 
 function addBankEstToDom(data) {
@@ -204,6 +218,18 @@ const backgroundFunctions = {
       tabId: null,
     },
   },
+  updateBackend: {
+    name: "updateBackend",
+    args: {
+      address: getAddress(),
+      link: null,
+      price: "500000",
+      minPrice: null,
+      maxPrice: null,
+      title: "some title",
+      tabId: null,
+    },
+  },
 };
 
 chrome.runtime.onMessage.addListener(function (msg) {
@@ -212,6 +238,9 @@ chrome.runtime.onMessage.addListener(function (msg) {
       tabId = msg.data;
       backgroundFunctions.getCommbankPrice.args.tabId = msg.data;
       backgroundFunctions.getNbnData.args.tabId = msg.data;
+      backgroundFunctions.updateBackend.args.tabId = msg.data;
+      backgroundFunctions.updateBackend.args.link = window.location.href;
+      console.log("!!!!!", backgroundFunctions.updateBackend.args);
       if (!allFetchingComplete) initRealEstateMate();
 
       break;
@@ -222,6 +251,10 @@ chrome.runtime.onMessage.addListener(function (msg) {
     }
     case "getNbnData": {
       addNbnToDom(msg.data);
+    }
+    case "updateBackend": {
+      console.log("foreground update backend");
+      break;
     }
     default:
       break;
@@ -240,6 +273,7 @@ async function initRealEstateMate() {
   addPriceRangeToDom();
   chrome.runtime.sendMessage(backgroundFunctions.getCommbankPrice);
   chrome.runtime.sendMessage(backgroundFunctions.getNbnData);
+  chrome.runtime.sendMessage(backgroundFunctions.updateBackend);
 }
 
 function checkAllFetchComplete() {
@@ -271,4 +305,6 @@ function showInformation() {
     element.style.opacity = "1";
     element.style.height = "auto";
   });
+  console.log("BEFORE UPDATE BACKEND");
+  console.log("BACKEND", backendFunctions.updateBackend.name);
 }
