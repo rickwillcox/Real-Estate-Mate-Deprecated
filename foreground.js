@@ -24,6 +24,46 @@ function addStylesToDom() {
   document.head.appendChild(style);
 }
 
+document.getElementsByTagName("Style")[0].innerHTML += `
+  .timeline {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .timeline-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  .timeline-item-left,
+  .timeline-item-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+  }
+  .timeline-item-left {
+    margin-right: 1rem;
+    order: -1;
+  }
+  .timeline-item-right {
+    margin-left: 1rem;
+    order: 1;
+  }
+  .timeline-item::before {
+    content: "";
+    flex-shrink: 0;
+    border-top: 2px solid #ccc;
+    border-radius: 50%;
+    width: 1rem;
+    height: 1rem;
+    margin: 0 1rem;
+    background-color: #fff;
+  }
+`;
+
 function addRealEstateMateContainer() {
   if (document.getElementsByClassName("real-estate-mate").length > 0) {
     document.getElementsByClassName("real-estate-mate")[0].remove();
@@ -82,11 +122,29 @@ function addBankEstToDom(data) {
   }
   if (getCommbankPriceComplete) return;
   getCommbankPriceComplete = true;
-  document.getElementsByClassName(
-    "real-estate-mate-bank-est"
-  )[0].innerHTML += ` <a  style="color: blue" target="blank" href="${link}"> ${
-    estimate === null ? "Not Available" : "$" + estimate
-  }</a>`;
+  // document.getElementsByClassName(
+  //   "real-estate-mate-bank-est"
+  // )[0].innerHTML += ` <a  style="color: blue" target="blank" href="${link}"> ${
+  //   estimate === null ? "Not Available" : "$" + estimate
+  // }</a>`;
+  document.getElementsByClassName("real-estate-mate-bank-est")[0].innerHTML = `
+  <div class="real-estate-mate-bank-est">
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-item-left">2022-12-30</div>
+      <div class="timeline-item-right">$100</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-item-left">2022-12-29</div>
+      <div class="timeline-item-right">$90</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-item-left">2022-12-28</div>
+      <div class="timeline-item-right">$80</div>
+    </div>
+  </div>
+</div>
+`;
 }
 
 function addNbnToDom(data) {
@@ -176,12 +234,21 @@ function addNbnToDom(data) {
   list.appendChild(coExistanceItem);
 }
 
+function getPriceInfo() {
+  const priceInfo = document.getElementsByClassName(
+    "property-price property-info__price"
+  )[0].innerHTML;
+  return priceInfo;
+}
+
 function createGetAddressFunction() {
   let address = null;
-  return function () {
+  let fullAddress = null;
+  return function (getFullAddress) {
+    if (getFullAddress && fullAddress) return fullAddress;
     if (address) return address;
     const metaTags = document.getElementsByTagName("meta");
-    let fullAddress = Array.prototype.reduce.call(
+    fullAddress = Array.prototype.reduce.call(
       metaTags,
       function (acc, metaTag) {
         if (metaTag.getAttribute("property") == "og:title") {
@@ -192,6 +259,7 @@ function createGetAddressFunction() {
       },
       null
     );
+    if (getFullAddress) return fullAddress;
     const splitAddress = fullAddress.split(",");
     address = splitAddress[0] + ", " + splitAddress[1];
     return address;
@@ -221,9 +289,9 @@ const backgroundFunctions = {
   updateBackend: {
     name: "updateBackend",
     args: {
-      address: getAddress(),
+      address: getAddress(true),
       link: null,
-      price: "500000",
+      price: getPriceInfo(),
       minPrice: null,
       maxPrice: null,
       title: "some title",
@@ -240,7 +308,7 @@ chrome.runtime.onMessage.addListener(function (msg) {
       backgroundFunctions.getNbnData.args.tabId = msg.data;
       backgroundFunctions.updateBackend.args.tabId = msg.data;
       backgroundFunctions.updateBackend.args.link = window.location.href;
-      console.log("!!!!!", backgroundFunctions.updateBackend.args);
+      console.log("PRCE", backgroundFunctions.updateBackend.args.price);
       if (!allFetchingComplete) initRealEstateMate();
 
       break;
@@ -252,16 +320,34 @@ chrome.runtime.onMessage.addListener(function (msg) {
     case "getNbnData": {
       addNbnToDom(msg.data);
     }
-    case "updateBackend": {
-      console.log("foreground update backend");
-      break;
-    }
     default:
       break;
   }
   checkAllFetchComplete();
   return;
 });
+
+function addListingUpdatesToDom() {
+  // const container = document.getElementsByClassName(
+  //   "real-estate-mate-container"
+  // )[0];
+  // const listingUpdates = document.createElement("div");
+  // listingUpdates.classList.add("real-estate-mate-listing-updates");
+  // container.appendChild(listingUpdates);
+  // document.getElementsByClassName(
+  //   "real-estate-mate-bank-est"
+  // )[0].innerHTML = `<div class="timeline">
+  //   <div class="timeline-item">
+  //     <div>2022-12-30: $100</div>
+  //   </div>
+  //   <div class="timeline-item">
+  //     <div>2022-12-29: $90</div>
+  //   </div>
+  //   <div class="timeline-item">
+  //     <div>2022-12-28: $80</div>
+  //   </div>
+  // </div>`;
+}
 
 let getCommbankPriceComplete = false;
 let getNbnDataComplete = false;
@@ -271,6 +357,7 @@ async function initRealEstateMate() {
   addStylesToDom();
   addRealEstateMateContainer();
   addPriceRangeToDom();
+  addListingUpdatesToDom();
   chrome.runtime.sendMessage(backgroundFunctions.getCommbankPrice);
   chrome.runtime.sendMessage(backgroundFunctions.getNbnData);
   chrome.runtime.sendMessage(backgroundFunctions.updateBackend);
@@ -298,8 +385,16 @@ function showInformation() {
   );
   const bankEstElement = document.querySelector(".real-estate-mate-bank-est");
   const internetElement = document.querySelector(".real-estate-mate-internet");
+  const listingUpdatesElement = document.querySelector(
+    ".real-estate-mate-listing-updates"
+  );
 
-  const elements = [priceRangeElement, bankEstElement, internetElement];
+  const elements = [
+    priceRangeElement,
+    bankEstElement,
+    internetElement,
+    listingUpdatesElement,
+  ];
   elements.forEach((element) => {
     element.style.visibility = "visible";
     element.style.opacity = "1";
