@@ -17,6 +17,7 @@
   ],
   "content_scripts": [
     {
+      "css": ["styles.css"],
       "js": ["foreground.js"],
       "matches": ["https://www.realestate.com.au/property*"]
     }

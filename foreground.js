@@ -24,46 +24,6 @@ function addStylesToDom() {
   document.head.appendChild(style);
 }
 
-document.getElementsByTagName("Style")[0].innerHTML += `
-  .timeline {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .timeline-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-  .timeline-item-left,
-  .timeline-item-right {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 0.25rem;
-  }
-  .timeline-item-left {
-    margin-right: 1rem;
-    order: -1;
-  }
-  .timeline-item-right {
-    margin-left: 1rem;
-    order: 1;
-  }
-  .timeline-item::before {
-    content: "";
-    flex-shrink: 0;
-    border-top: 2px solid #ccc;
-    border-radius: 50%;
-    width: 1rem;
-    height: 1rem;
-    margin: 0 1rem;
-    background-color: #fff;
-  }
-`;
-
 function addRealEstateMateContainer() {
   if (document.getElementsByClassName("real-estate-mate").length > 0) {
     document.getElementsByClassName("real-estate-mate")[0].remove();
@@ -79,7 +39,8 @@ function addRealEstateMateContainer() {
     <h6 class="real-estate-mate-price-range" style="visibility: hidden; opacity: 0; transition: opacity 1s ease-in-out; height: 0">Price Range: </h6>
     <h6 class="real-estate-mate-bank-est" style="visibility: hidden; opacity: 0; transition: opacity 1s ease-in-out; height: 0">Bank Est: </h6>
     <div class="real-estate-mate-internet" style="visibility: hidden; opacity: 0; transition: opacity 1s ease-in-out; height: 0">Internet: <ul class="real-estate-mate-internet-list" style="list-style-type: disc; padding-left: 40px"></ul></div>
-  </div>`;
+    <div class="real-estate-mate-listing-updates"  style="visibility: hidden; opacity: 0; transition: opacity 1s ease-in-out; height: 0"> </div>
+    </div>`;
 }
 // how can I get the current url that the user is on
 function getUrlFromPage() {
@@ -122,29 +83,11 @@ function addBankEstToDom(data) {
   }
   if (getCommbankPriceComplete) return;
   getCommbankPriceComplete = true;
-  // document.getElementsByClassName(
-  //   "real-estate-mate-bank-est"
-  // )[0].innerHTML += ` <a  style="color: blue" target="blank" href="${link}"> ${
-  //   estimate === null ? "Not Available" : "$" + estimate
-  // }</a>`;
-  document.getElementsByClassName("real-estate-mate-bank-est")[0].innerHTML = `
-  <div class="real-estate-mate-bank-est">
-  <div class="timeline">
-    <div class="timeline-item">
-      <div class="timeline-item-left">2022-12-30</div>
-      <div class="timeline-item-right">$100</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-item-left">2022-12-29</div>
-      <div class="timeline-item-right">$90</div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-item-left">2022-12-28</div>
-      <div class="timeline-item-right">$80</div>
-    </div>
-  </div>
-</div>
-`;
+  document.getElementsByClassName(
+    "real-estate-mate-bank-est"
+  )[0].innerHTML += ` <a  style="color: blue" target="blank" href="${link}"> ${
+    estimate === null ? "Not Available" : "$" + estimate
+  }</a>`;
 }
 
 function addNbnToDom(data) {
@@ -298,6 +241,13 @@ const backgroundFunctions = {
       tabId: null,
     },
   },
+  getListingUpdates: {
+    name: "getListingUpdates",
+    args: {
+      address: getAddress(true),
+      tabId: null,
+    },
+  },
 };
 
 chrome.runtime.onMessage.addListener(function (msg) {
@@ -308,7 +258,7 @@ chrome.runtime.onMessage.addListener(function (msg) {
       backgroundFunctions.getNbnData.args.tabId = msg.data;
       backgroundFunctions.updateBackend.args.tabId = msg.data;
       backgroundFunctions.updateBackend.args.link = window.location.href;
-      console.log("PRCE", backgroundFunctions.updateBackend.args.price);
+      backgroundFunctions.getListingUpdates.args.tabId = msg.data;
       if (!allFetchingComplete) initRealEstateMate();
 
       break;
@@ -320,6 +270,14 @@ chrome.runtime.onMessage.addListener(function (msg) {
     case "getNbnData": {
       addNbnToDom(msg.data);
     }
+    case "updateBackend": {
+      break;
+    }
+    case "getListingUpdates": {
+      console.log("getListingUpdates foreground:", msg.functionName, msg.data);
+      addListingUpdatesToDom(msg.data);
+      break;
+    }
     default:
       break;
   }
@@ -327,26 +285,87 @@ chrome.runtime.onMessage.addListener(function (msg) {
   return;
 });
 
-function addListingUpdatesToDom() {
-  // const container = document.getElementsByClassName(
-  //   "real-estate-mate-container"
-  // )[0];
-  // const listingUpdates = document.createElement("div");
-  // listingUpdates.classList.add("real-estate-mate-listing-updates");
-  // container.appendChild(listingUpdates);
-  // document.getElementsByClassName(
-  //   "real-estate-mate-bank-est"
-  // )[0].innerHTML = `<div class="timeline">
-  //   <div class="timeline-item">
-  //     <div>2022-12-30: $100</div>
-  //   </div>
-  //   <div class="timeline-item">
-  //     <div>2022-12-29: $90</div>
-  //   </div>
-  //   <div class="timeline-item">
-  //     <div>2022-12-28: $80</div>
-  //   </div>
-  // </div>`;
+// function addListingUpdatesToDom(listingUpdates) {
+//   console.log("addListingUpdatesToDom", listingUpdates);
+//   const container = document.getElementsByClassName(
+//     "real-estate-mate-listing-updates"
+//   )[0];
+//   console.log(container);
+
+//   for (const [date, updates] of Object.entries(listingUpdates)) {
+//     const group = document.createElement("div");
+//     group.classList.add("update-group");
+
+//     const dateHeader = document.createElement("h2");
+//     console.log("date", date, "group", group);
+//     dateHeader.textContent = date;
+//     group.appendChild(dateHeader);
+
+//     updates.forEach((update) => {
+//       const updateLine = document.createElement("p");
+//       const updatedField = document.createElement("strong");
+//       updatedField.textContent = update.updatedField + ": ";
+//       updateLine.appendChild(updatedField);
+//       updateLine.appendChild(document.createTextNode(update.updatedValue));
+//       if (update.lastValue) {
+//         updateLine.appendChild(
+//           document.createTextNode(` (previously: ${update.lastValue})`)
+//         );
+//       }
+//       console.log(updateLine);
+//       group.appendChild(updateLine);
+//     });
+
+//     container.appendChild(group);
+//     console.log(container);
+//   }
+// }
+
+document.getElementsByTagName("Style")[0].innerHTML += `
+
+`;
+
+function addListingUpdatesToDom(listingUpdates) {
+  const container = document.getElementsByClassName(
+    "real-estate-mate-listing-updates"
+  )[0];
+
+  // Create the timeline element
+  const timeline = document.createElement("div");
+  // timeline.classList.add("timeline");
+  container.appendChild(timeline);
+
+  // Create a line to indicate the timeline
+  const timelineLine = document.createElement("div");
+  // timelineLine.classList.add("timeline-line");
+  timeline.appendChild(timelineLine);
+
+  let groupSide = "left"; // Keep track of which side the group should be on
+  for (const [date, updates] of Object.entries(listingUpdates)) {
+    const group = document.createElement("div");
+    const dateHeader = document.createElement("div");
+    dateHeader.className = "mystyle";
+    dateHeader.textContent = date;
+
+    group.appendChild(dateHeader);
+
+    updates.forEach((update) => {
+      const updateLine = document.createElement("p");
+      updateLine.style.fontSize = "10px";
+      const updatedField = document.createElement("strong");
+      updatedField.textContent = update.updatedField + ": ";
+      updateLine.appendChild(updatedField);
+      updateLine.appendChild(document.createTextNode(update.updatedValue));
+      if (update.lastValue) {
+        updateLine.appendChild(
+          document.createTextNode(` (previously: ${update.lastValue})`)
+        );
+      }
+      group.appendChild(updateLine);
+    });
+
+    timeline.appendChild(group);
+  }
 }
 
 let getCommbankPriceComplete = false;
@@ -357,10 +376,10 @@ async function initRealEstateMate() {
   addStylesToDom();
   addRealEstateMateContainer();
   addPriceRangeToDom();
-  addListingUpdatesToDom();
   chrome.runtime.sendMessage(backgroundFunctions.getCommbankPrice);
   chrome.runtime.sendMessage(backgroundFunctions.getNbnData);
   chrome.runtime.sendMessage(backgroundFunctions.updateBackend);
+  chrome.runtime.sendMessage(backgroundFunctions.getListingUpdates);
 }
 
 function checkAllFetchComplete() {

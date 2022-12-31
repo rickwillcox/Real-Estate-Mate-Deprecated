@@ -74,6 +74,27 @@ async function nbnHelper(address) {
   }
 }
 
+async function getListingUpdatesHelper(address) {
+  // add address to the body of the request
+  console.log("44444", address);
+  const response = await fetch(
+    `http://localhost:3000/getRealEstateListingUpdates`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        address: address.toString(),
+      }),
+    }
+  );
+  console.log("!!!!");
+  console.log("???", response);
+  const data = await response.json();
+  return data;
+}
+
 chrome.runtime.onMessage.addListener(function async(
   func,
   sender,
@@ -121,7 +142,14 @@ async function processForegroundFunction(func) {
         func.args.maxPrice,
         func.args.title
       );
+    case "getListingUpdates": {
+      msg.functionName = func.name;
+      msg.data = await getListingUpdatesHelper(func.args.address);
+      console.log("listing updates background after fetch", msg.data);
+      chrome.tabs.sendMessage(func.args.tabId, msg);
 
+      break;
+    }
     default:
       break;
   }
