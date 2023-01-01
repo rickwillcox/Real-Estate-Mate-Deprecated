@@ -50,3 +50,14 @@
 .rem-internet-list-connection {
   color: blue;
 }
+.real-estate-mate {
+  border-style: solid;
+  border-color: black;
+  padding: 15px;
+  border-radius: 10px; /* adds rounded corners to the element */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.5); /* adds a subtle drop shadow */
+  transform: translateY(-4px); /* elevates the element */
+  background: linear-gradient(to bottom, #ffffff, #f5f5f5);
+  transition: all 0.2s ease-in-out;
+  font-family: "Pangea", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}

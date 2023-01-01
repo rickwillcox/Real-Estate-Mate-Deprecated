@@ -5,5 +5,4 @@ export * from "./addBankEstToDom";
 export * from "./addNbnToDom";
 export * from "./addListingUpdatesToDom";
 export * from "./spinLogo";
-export * from "./showInformation";
 export * from "./fadeInElement";

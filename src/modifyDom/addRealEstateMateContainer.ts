@@ -1,15 +1,17 @@
 import { mainContainer } from "../containers";
-import { fgLog } from "../utils";
+import {
+  fgLog,
+  realEstateMateElement,
+  propertyInfoMiddleContentElement,
+} from "../utils";
 
 export async function addRealEstateMateContainer() {
   fgLog("addRealEstateMateContainer start");
-  if (document.getElementsByClassName("real-estate-mate").length > 0) {
+  if (realEstateMateElement()) {
     fgLog("addRealEstateMateContainer removing old container");
-    document.getElementsByClassName("real-estate-mate")[0].remove();
+    realEstateMateElement().remove();
   }
 
-  document.getElementsByClassName(
-    "property-info__middle-content"
-  )[0].innerHTML += mainContainer;
+  propertyInfoMiddleContentElement().innerHTML += mainContainer;
   fgLog("addRealEstateMateContainer end");
 }

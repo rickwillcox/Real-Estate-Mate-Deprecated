@@ -1,20 +1,22 @@
 export interface FgToBgFunctions {
   onTabUpdated: {
     name: string;
-    args: string;
+    args: {
+      tabId: number;
+    };
   };
   getCommbankPrice: {
     name: string;
     args: {
       address: string | null;
-      tabId: string;
+      tabId: number;
     };
   };
   getNbnData: {
     name: string;
     args: {
       address: string | null;
-      tabId: string;
+      tabId: number;
     };
   };
   updateBackend: {
@@ -26,14 +28,14 @@ export interface FgToBgFunctions {
       minPrice: string;
       maxPrice: string;
       title: string;
-      tabId: string;
+      tabId: number;
     };
   };
   getListingUpdates: {
     name: string;
     args: {
       address: string | null;
-      tabId: string;
+      tabId: number;
     };
   };
 }

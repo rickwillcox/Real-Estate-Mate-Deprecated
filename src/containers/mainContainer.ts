@@ -17,7 +17,7 @@ const internetDefaultLink =
   "https://www.nbnco.com.au/connect-home-or-business/check-your-address";
 
 const mainContainer = `
-  <div class="real-estate-mate" style="border-width: 3px; border-style: solid; border-color: black; padding: 10px;">
+  <div class="real-estate-mate">
     <h3 class="rem-title">${titleText}</h3>
     <img class="rem-logo" src="${logoData.src}" alt="${logoData.alt}" height="${logoData.height}" width="${logoData.width}"/>
     <h6 class="rem-price-range">${priceRangeText}<span class="rem-price-range-inner"></span></h6>
