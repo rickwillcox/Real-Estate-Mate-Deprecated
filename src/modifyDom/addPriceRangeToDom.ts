@@ -9,13 +9,13 @@ export function addPriceRangeToDom(backgroundFunctions: any) {
 
   if (matches === null) {
     document.getElementsByClassName(
-      "real-estate-mate-price-range-inner"
+      "rem-price-range-inner"
     )[0].innerHTML = `No price range available`;
     fgLog("addPriceRangeToDom early return (matches === null) end");
     return;
   }
   document.getElementsByClassName(
-    "real-estate-mate-price-range-inner"
+    "rem-price-range-inner"
   )[0].innerHTML = `${matches[1].replace("_", " - ")}`;
 
   let split_price = matches[1].split("_");
@@ -27,7 +27,7 @@ export function addPriceRangeToDom(backgroundFunctions: any) {
     backgroundFunctions.updateBackend.args.maxPrice = split_price[0];
   }
   const priceRangeElement = document.querySelector(
-    ".real-estate-mate-price-range"
+    ".rem-price-range"
   ) as HTMLElement;
 
   fadeInElement(priceRangeElement);

@@ -3,16 +3,16 @@ import { fgLog } from "../utils";
 export function showInformation() {
   fgLog("showInformation start");
   // const priceRangeElement = document.querySelector(
-  //   ".real-estate-mate-price-range"
+  //   ".rem-price-range"
   // ) as HTMLElement;
   // const bankEstElement = document.querySelector(
-  //   ".real-estate-mate-bank-est"
+  //   ".rem-bank-est"
   // ) as HTMLElement;
   // const internetElement = document.querySelector(
-  //   ".real-estate-mate-internet"
+  //   ".rem-internet"
   // ) as HTMLElement;
   const listingUpdatesElement = document.querySelector(
-    ".real-estate-mate-listing-updates"
+    ".rem-listing-updates"
   ) as HTMLElement;
 
   const elements = [

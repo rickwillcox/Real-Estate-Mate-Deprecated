@@ -15,15 +15,13 @@ export function addBankEstToDom(data: any[]) {
   if (getState().commbankPriceComplete) return;
   setState({ commbankPriceComplete: true });
   const bankEstElementInner = document.getElementsByClassName(
-    "real-estate-mate-bank-est-inner"
+    "rem-bank-est-inner"
   )[0] as HTMLAnchorElement;
   bankEstElementInner.innerHTML =
     estimate === null ? "Not Available" : "$" + estimate;
   bankEstElementInner.href = link;
 
-  const bankEstElement = document.querySelector(
-    ".real-estate-mate-bank-est"
-  ) as HTMLElement;
+  const bankEstElement = document.querySelector(".rem-bank-est") as HTMLElement;
   fadeInElement(bankEstElement);
   fgLog("addBankEstToDom end");
 }

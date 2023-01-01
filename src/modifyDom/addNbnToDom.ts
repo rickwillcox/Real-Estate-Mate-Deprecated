@@ -1,5 +1,14 @@
 import { foregroundStore } from "../stores";
-import { fgLog } from "../utils";
+import {
+  fgLog,
+  internetCoExistanceElement,
+  internetCoExistanceFaceElement,
+  internetElement,
+  internetElementInner,
+  internetListElement,
+  internetPrimaryAccessTechnologyElement,
+  internetSpeedElement,
+} from "../utils";
 import { fadeInElement } from ".";
 
 export function addNbnToDom(data: {
@@ -10,22 +19,17 @@ export function addNbnToDom(data: {
   networkCoexistence: string;
 }) {
   fgLog("addNbnToDom start", data);
-  const { getState, setState, subscribe, destroy } = foregroundStore;
-
+  const { setState } = foregroundStore;
   setState({ nbnDataComplete: true });
-  const internetElement = document.querySelector(
-    ".real-estate-mate-internet"
-  ) as HTMLElement;
-  fadeInElement(internetElement);
+  fadeInElement(internetElement());
   if (!data) {
-    const internetElementInner = document.getElementsByClassName(
-      "real-estate-mate-internet-est-inner"
-    )[0] as HTMLAnchorElement;
-    if (!internetElementInner) {
+    if (!internetElementInner()) {
       fgLog("addNbnToDom early return (!internetElement) end");
       return;
     }
-    internetElementInner.style.visibility = "visible";
+    internetElementInner().style.visibility = "visible";
+    internetListElement().style.visibility = "hidden";
+    internetListElement().style.height = "0px";
     fgLog("addNbnToDom early return (!data) end");
     return;
   }
@@ -67,44 +71,26 @@ export function addNbnToDom(data: {
         "https://www.nbnco.com.au/learn/network-technology";
   }
 
-  let list = document.getElementsByClassName(
-    "real-estate-mate-internet-list"
-  )[0];
-
   if (speed) {
-    let speedElement = document.getElementsByClassName(
-      "real-estate-mate-internet-list-speed"
-    )[0] as HTMLElement;
     let speedDisplay = lowerSpeed && upperSpeed ? upperSpeed : speed;
-    speedElement.innerHTML =
+    internetSpeedElement().innerHTML =
       lowerSpeed && upperSpeed
         ? `${lowerSpeed} - ${upperSpeed} mbps`
         : `${speedDisplay} mbps`;
-    speedElement.style.color =
+    internetSpeedElement().style.color =
       speedDisplay < 25 ? "red" : speedDisplay < 50 ? "orange" : "green";
   }
-
   if (primaryAccessTechnology) {
-    let primaryAccessTechnologyElement = document.getElementsByClassName(
-      "real-estate-mate-internet-list-connection"
-    )[0] as HTMLAnchorElement;
-    primaryAccessTechnologyElement.innerHTML = primaryAccessTechnology;
-    primaryAccessTechnologyElement.href = primaryAccessTechnologyLink;
+    internetPrimaryAccessTechnologyElement().innerHTML =
+      primaryAccessTechnology;
+    internetPrimaryAccessTechnologyElement().href = primaryAccessTechnologyLink;
   }
 
-  let coExistanceElement = document.getElementsByClassName(
-    "real-estate-mate-internet-list-co-existance"
-  )[0] as HTMLAnchorElement;
-  console.log("coExistanceElement", coExistanceElement);
-  coExistanceElement.innerHTML = coExistance ? "Yes" : "No";
-  coExistanceElement.style.color = coExistance ? "red" : "green";
+  internetCoExistanceElement().innerHTML = coExistance ? "Yes" : "No";
+  internetCoExistanceElement().style.color = coExistance ? "red" : "green";
 
-  let coExistanceFaceElement = document.getElementsByClassName(
-    "real-estate-mate-internet-list-co-existance-face"
-  )[0] as HTMLElement;
-
-  coExistanceFaceElement.innerHTML = coExistance ? "  :(" : "  :)";
-  coExistanceFaceElement.style.color = coExistance ? "red" : "green";
+  internetCoExistanceFaceElement().innerHTML = coExistance ? "  :(" : "  :)";
+  internetCoExistanceFaceElement().style.color = coExistance ? "red" : "green";
 
   fgLog("addNbnToDom end");
 }

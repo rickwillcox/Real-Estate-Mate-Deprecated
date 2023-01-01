@@ -1,13 +1,13 @@
-.real-estate-mate-title {
+.rem-title {
   font-size: 22px;
   text-align: center;
   font-weight: bold;
 }
 
-.real-estate-mate-price-range,
-.real-estate-mate-bank-est,
-.real-estate-mate-internet,
-.real-estate-mate-listing-updates {
+.rem-price-range,
+.rem-bank-est,
+.rem-internet,
+.rem-listing-updates {
   font-size: 18px;
   font-weight: bold;
   visibility: hidden;
@@ -16,37 +16,37 @@
   height: 0;
 }
 
-.real-estate-mate-logo {
+.rem-logo {
   animation: growShrink 1.2s linear infinite;
   display: block;
   margin: auto;
 }
 
-.real-estate-mate-price-range-inner,
-.real-estate-mate-bank-est-inner,
-.real-estate-mate-internet-est-inner,
-.real-estate-mate-internet-list-speed,
-.real-estate-mate-internet-list-connection,
-.real-estate-mate-internet-list-co-existance,
-.real-estate-mate-internet-list-co-existance-face {
+.rem-price-range-inner,
+.rem-bank-est-inner,
+.rem-internet-est-inner,
+.rem-internet-list-speed,
+.rem-internet-list-connection,
+.rem-internet-list-co-existance,
+.rem-internet-list-co-existance-face {
   font-size: 18px;
   font-weight: 400;
 }
 
-.real-estate-mate-internet-list {
+.rem-internet-list {
   list-style-type: disc;
   padding-left: 40px;
 }
 
-.real-estate-mate-bank-est-inner,
-.real-estate-mate-internet-est-inner {
+.rem-bank-est-inner,
+.rem-internet-est-inner {
   color: blue;
 }
 
-.real-estate-mate-internet-est-inner {
+.rem-internet-est-inner {
   visibility: hidden;
 }
 
-.real-estate-mate-internet-list-connection {
+.rem-internet-list-connection {
   color: blue;
 }

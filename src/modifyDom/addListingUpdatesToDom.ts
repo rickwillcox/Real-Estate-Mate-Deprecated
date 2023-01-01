@@ -4,7 +4,7 @@ export function addListingUpdatesToDom(listingUpdates: {
   [key: string]: UpdateEvent[];
 }) {
   // const container = document.getElementsByClassName(
-  //   "real-estate-mate-listing-updates"
+  //   "rem-listing-updates"
   // )[0];
   // // Create the timeline element
   // const timeline = document.createElement("div");
