@@ -1,0 +1,36 @@
+{
+  "name": "real-estate-mate",
+  "version": "1.0.0",
+  "description": "![logo](/logo/logo-128.png)",
+  "main": "background.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config webpack/webpack.config.js",
+    "watch": "watch 'npm run build' ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RickWillcox/Real-Estate-Mate.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RickWillcox/Real-Estate-Mate/issues"
+  },
+  "homepage": "https://github.com/RickWillcox/Real-Estate-Mate#readme",
+  "devDependencies": {
+    "@types/chrome": "^0.0.206",
+    "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.7.3",
+    "html-loader": "^4.2.0",
+    "ts-loader": "^9.4.2",
+    "typescript": "^4.9.4",
+    "watch": "^1.0.2",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
+  },
+  "dependencies": {
+    "glob": "^8.0.3"
+  }
+}

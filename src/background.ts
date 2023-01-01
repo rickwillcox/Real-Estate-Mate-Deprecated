@@ -1,5 +1,5 @@
-// as a chroms listener
-async function getPageSource(url) {
+//@ts-ignore
+async function getPageSource(url: string) {
   try {
     const response = await fetch(url);
     const pageSource = await response.text();
@@ -8,35 +8,59 @@ async function getPageSource(url) {
   return null;
 }
 
-async function getDomainLink(searchTerm) {
+async function getDomainLink(searchTerm: string) {
   const pageSource = await getPageSource(
     `https://www.domain.com.au/sale/?street=${searchTerm}`
   );
   const regex = /<a href="(https:\/\/www\.domain\.com\.au\/\d+-.*-\d+-\d+)">/;
-  const matches = pageSource.match(regex);
+  const matches = pageSource?.match(regex);
+  if (!(matches && matches[0] && matches[1])) {
+    return null;
+  }
   const domainLink = matches !== null ? matches[1].split('"')[0] : null;
   return domainLink;
 }
 
-async function getDomainPropertyId(domainLink) {
+// async function getDomainPropertyId(domainLink) {
+//   const pageSource = await getPageSource(domainLink);
+//   const regex = /propertyId":"(.+?)"/;
+//   const matches = pageSource.match(regex);
+//   const domainPropertyId = matches !== null ? matches[1].split('"')[0] : null;
+//   return domainPropertyId;
+// }
+
+async function getDomainPropertyId(domainLink: string) {
   const pageSource = await getPageSource(domainLink);
-  const regex = /propertyId":"(.+?)"/;
-  const matches = pageSource.match(regex);
-  const domainPropertyId = matches !== null ? matches[1].split('"')[0] : null;
+  let domainPropertyId;
+  if (typeof pageSource === "string") {
+    const regex = /propertyId":"(.+?)"/;
+    const matches = pageSource.match(regex);
+    domainPropertyId = matches !== null ? matches[1].split('"')[0] : null;
+  }
   return domainPropertyId;
 }
 
-async function getCommBankPriceEval(domainPropertyId) {
+// async function getCommBankPriceEval(domainPropertyId) {
+//   const pageSource = await getPageSource(
+//     `https://www.commbank.com.au/digital/home-buying/property/${domainPropertyId}?byAddress=true`
+//   );
+//   const regex = /displayPrice&quot;:\&quot;\$(\d+,\d+)\&/;
+//   const matches = pageSource.match(regex);
+//   const commBankPriceEval = matches !== null ? matches[1].split('"')[0] : null;
+//   return commBankPriceEval;
+// }
+
+async function getCommBankPriceEval(domainPropertyId: string) {
   const pageSource = await getPageSource(
     `https://www.commbank.com.au/digital/home-buying/property/${domainPropertyId}?byAddress=true`
   );
   const regex = /displayPrice&quot;:\&quot;\$(\d+,\d+)\&/;
-  const matches = pageSource.match(regex);
+  const matches = (pageSource as string).match(regex);
   const commBankPriceEval = matches !== null ? matches[1].split('"')[0] : null;
   return commBankPriceEval;
 }
 
-async function commBankHelper(address) {
+async function commBankHelper(address: string) {
   let domainLink = null;
   let domainPropertyId = null;
   let commBankPriceEval = null;
@@ -48,7 +72,7 @@ async function commBankHelper(address) {
     }
 
     domainPropertyId = await getDomainPropertyId(domainLink);
-    if (domainPropertyId === null) {
+    if (!domainPropertyId) {
       throw new Error("Failed to get domain property ID");
     }
   } catch (error) {
@@ -60,7 +84,7 @@ async function commBankHelper(address) {
   return [commBankPriceEval, domainPropertyId];
 }
 
-async function nbnHelper(address) {
+async function nbnHelper(address: string) {
   address = address.replace(/,/g, "").replace(/ +/g, " ");
   address = address.replace(/ /g, "+");
   try {
@@ -74,9 +98,8 @@ async function nbnHelper(address) {
   }
 }
 
-async function getListingUpdatesHelper(address) {
+async function getListingUpdatesHelper(address: string) {
   // add address to the body of the request
-  console.log("44444", address);
   const response = await fetch(
     `http://localhost:3000/getRealEstateListingUpdates`,
     {
@@ -89,8 +112,6 @@ async function getListingUpdatesHelper(address) {
       }),
     }
   );
-  console.log("!!!!");
-  console.log("???", response);
   const data = await response.json();
   return data;
 }
@@ -106,19 +127,25 @@ chrome.runtime.onMessage.addListener(function async(
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   if (changeInfo.status === "complete") {
-    const msg = {};
+    const msg: { functionName?: string; data?: any } = {};
     msg.functionName = "onTabUpdated";
     msg.data = tab.id;
     try {
-      chrome.tabs.sendMessage(tab.id, msg);
+      // chrome.tabs.sendMessage(tab.id, msg);
+      chrome.tabs.sendMessage(tabId, msg);
     } catch {
       throw new Error("Failed to send message to tab");
     }
   }
 });
 
-async function processForegroundFunction(func) {
-  const msg = {};
+// make func any of these interface keys + values
+// backgroundFunctions;
+async function processForegroundFunction(func: any) {
+  const msg: { functionName: string; data: any } = {
+    functionName: "",
+    data: null,
+  };
   console.log(func);
   switch (func.name) {
     case "getCommbankPrice":
@@ -157,7 +184,7 @@ async function processForegroundFunction(func) {
 
 //
 
-function createNewComment(comment, address) {
+function createNewComment(comment: string, address: string) {
   fetch("http://localhost:3000/createNewComment", {
     method: "POST",
     headers: {
@@ -178,12 +205,12 @@ function createNewComment(comment, address) {
 }
 
 function updateRealEstateListing(
-  address,
-  link,
-  price,
-  minPrice,
-  maxPrice,
-  title
+  address: string,
+  link: string,
+  price: string,
+  minPrice: string,
+  maxPrice: string,
+  title: string
 ) {
   console.log(
     "updating real estate listing",
