@@ -24,7 +24,11 @@
 
 .real-estate-mate-price-range-inner,
 .real-estate-mate-bank-est-inner,
-.real-estate-mate-internet-est-inner {
+.real-estate-mate-internet-est-inner,
+.real-estate-mate-internet-list-speed,
+.real-estate-mate-internet-list-connection,
+.real-estate-mate-internet-list-co-existance,
+.real-estate-mate-internet-list-co-existance-face {
   font-size: 18px;
   font-weight: 400;
 }
@@ -41,4 +45,8 @@
 
 .real-estate-mate-internet-est-inner {
   visibility: hidden;
+}
+
+.real-estate-mate-internet-list-connection {
+  color: blue;
 }

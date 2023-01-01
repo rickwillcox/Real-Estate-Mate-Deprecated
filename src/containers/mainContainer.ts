@@ -1,4 +1,5 @@
 import { fgLog } from "../utils";
+import { internetListContainer } from ".";
 
 fgLog("mainContainer.ts start");
 const logoData = {
@@ -21,7 +22,7 @@ const mainContainer = `
     <img class="real-estate-mate-logo" src="${logoData.src}" alt="${logoData.alt}" height="${logoData.height}" width="${logoData.width}"/>
     <h6 class="real-estate-mate-price-range">${priceRangeText}<span class="real-estate-mate-price-range-inner"></span></h6>
     <h6 class="real-estate-mate-bank-est">${bankEstText}<a class="real-estate-mate-bank-est-inner" target="blank" href=""></a></h6>
-    <div class="real-estate-mate-internet">${internetText}<a class="real-estate-mate-internet-est-inner" target="blank" href="${internetDefaultLink}">Not Available</a><ul class="real-estate-mate-internet-list"></ul></div>
+    <div class="real-estate-mate-internet">${internetText}<a class="real-estate-mate-internet-est-inner" target="blank" href="${internetDefaultLink}">Not Available</a>${internetListContainer}</div>
     <div class="real-estate-mate-listing-updates"></div>
   </div>
 `;

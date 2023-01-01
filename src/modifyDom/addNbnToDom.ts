@@ -72,37 +72,39 @@ export function addNbnToDom(data: {
   )[0];
 
   if (speed) {
-    let speedItem = document.createElement("li");
-    if (lowerSpeed && upperSpeed) {
-      speedItem.innerHTML = `<h6>Speed: <span style="color: ${
-        upperSpeed < 25 ? "red" : upperSpeed < 50 ? "orange" : "green"
-      };">${lowerSpeed} - ${upperSpeed} mbps</span></h6>`;
-    } else {
-      speedItem.innerHTML = `<h6>Speed: <span style="color: ${
-        speed < 25 ? "red" : speed < 50 ? "orange" : "green"
-      };">${speed} mbps</span></h6>`;
-    }
-
-    list.appendChild(speedItem);
+    let speedElement = document.getElementsByClassName(
+      "real-estate-mate-internet-list-speed"
+    )[0] as HTMLElement;
+    let speedDisplay = lowerSpeed && upperSpeed ? upperSpeed : speed;
+    speedElement.innerHTML =
+      lowerSpeed && upperSpeed
+        ? `${lowerSpeed} - ${upperSpeed} mbps`
+        : `${speedDisplay} mbps`;
+    speedElement.style.color =
+      speedDisplay < 25 ? "red" : speedDisplay < 50 ? "orange" : "green";
   }
 
   if (primaryAccessTechnology) {
-    let primaryAccessTechnologyItem = document.createElement("li");
-    primaryAccessTechnologyItem.innerHTML += "Connection: ";
-    primaryAccessTechnologyItem.innerHTML += `<a  style="color: blue" target="blank" href="${primaryAccessTechnologyLink}">${primaryAccessTechnology}</a>`;
-    list.appendChild(primaryAccessTechnologyItem);
+    let primaryAccessTechnologyElement = document.getElementsByClassName(
+      "real-estate-mate-internet-list-connection"
+    )[0] as HTMLAnchorElement;
+    primaryAccessTechnologyElement.innerHTML = primaryAccessTechnology;
+    primaryAccessTechnologyElement.href = primaryAccessTechnologyLink;
   }
 
-  let coExistanceItem = document.createElement("li");
-  coExistanceItem.innerHTML += "Co-Existance: ";
-  coExistanceItem.innerHTML += `<a  style="color: ${
-    coExistance ? "red" : "green"
-  }" target="blank" href="https://help.australiabroadband.com.au/support/solutions/articles/44000688641-what-is-co-existence-and-why-does-it-affect-my-internet-speed-">${
-    coExistance ? "Yes" : "No"
-  }</a>`;
-  coExistanceItem.innerHTML += `<span style="color: ${
-    coExistance ? "red" : "green"
-  }">${coExistance ? "  :(" : "  :)"}</span>`;
-  list.appendChild(coExistanceItem);
+  let coExistanceElement = document.getElementsByClassName(
+    "real-estate-mate-internet-list-co-existance"
+  )[0] as HTMLAnchorElement;
+  console.log("coExistanceElement", coExistanceElement);
+  coExistanceElement.innerHTML = coExistance ? "Yes" : "No";
+  coExistanceElement.style.color = coExistance ? "red" : "green";
+
+  let coExistanceFaceElement = document.getElementsByClassName(
+    "real-estate-mate-internet-list-co-existance-face"
+  )[0] as HTMLElement;
+
+  coExistanceFaceElement.innerHTML = coExistance ? "  :(" : "  :)";
+  coExistanceFaceElement.style.color = coExistance ? "red" : "green";
+
   fgLog("addNbnToDom end");
 }
