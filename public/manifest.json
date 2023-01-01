@@ -23,7 +23,8 @@
         "modifyDom/index.js",
         "interfaces/index.js",
         "utils/index.js",
-        "stores/index.js"
+        "stores/index.js",
+        "containers/index.js"
       ],
       "matches": ["https://www.realestate.com.au/property*"]
     }

@@ -1,4 +1,4 @@
-import mainContainer from "../mainContainer";
+import { mainContainer } from "../containers";
 import { fgLog } from "../utils";
 
 export async function addRealEstateMateContainer() {

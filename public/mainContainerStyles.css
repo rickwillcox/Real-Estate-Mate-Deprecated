@@ -23,7 +23,8 @@
 }
 
 .real-estate-mate-price-range-inner,
-.real-estate-mate-bank-est-inner {
+.real-estate-mate-bank-est-inner,
+.real-estate-mate-internet-est-inner {
   font-size: 18px;
   font-weight: 400;
 }
@@ -33,6 +34,11 @@
   padding-left: 40px;
 }
 
-.real-estate-mate-bank-est-inner {
+.real-estate-mate-bank-est-inner,
+.real-estate-mate-internet-est-inner {
   color: blue;
+}
+
+.real-estate-mate-internet-est-inner {
+  visibility: hidden;
 }

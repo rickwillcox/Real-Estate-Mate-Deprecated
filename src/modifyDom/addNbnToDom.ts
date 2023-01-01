@@ -11,24 +11,21 @@ export function addNbnToDom(data: {
 }) {
   fgLog("addNbnToDom start", data);
   const { getState, setState, subscribe, destroy } = foregroundStore;
-  // if (getState().nbnDataComplete) {
-  //   fgLog("addNbnToDom early return (getState().nbnDataComplete) end");
-  //   return;
-  // }
+
   setState({ nbnDataComplete: true });
   const internetElement = document.querySelector(
     ".real-estate-mate-internet"
   ) as HTMLElement;
   fadeInElement(internetElement);
   if (!data) {
-    const internetElement = document.querySelector(
-      ".real-estate-mate-internet"
-    );
-    if (!internetElement) {
+    const internetElementInner = document.getElementsByClassName(
+      "real-estate-mate-internet-est-inner"
+    )[0] as HTMLAnchorElement;
+    if (!internetElementInner) {
       fgLog("addNbnToDom early return (!internetElement) end");
       return;
     }
-    internetElement.innerHTML = `Internet:  <a  style="color: blue" target="blank" href="https://www.nbnco.com.au/connect-home-or-business/check-your-address">Not Available</a>`;
+    internetElementInner.style.visibility = "visible";
     fgLog("addNbnToDom early return (!data) end");
     return;
   }

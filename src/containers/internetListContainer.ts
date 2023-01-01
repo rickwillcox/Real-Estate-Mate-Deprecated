@@ -1,0 +1,5 @@
+const internetListContainer = `
+  
+`;
+
+export { internetListContainer };
