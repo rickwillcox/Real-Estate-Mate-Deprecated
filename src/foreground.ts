@@ -5,6 +5,7 @@ import {
   addBankEstToDom,
   addNbnToDom,
   spinLogo,
+  addListingUpdatesToDom,
 } from "./modifyDom";
 import { backgroundFunctionsStore, foregroundStore } from "./stores";
 import { getUrlFromPage, fgLog } from "./utils";
@@ -46,7 +47,8 @@ chrome.runtime.onMessage.addListener(function (msg) {
       break;
     }
     case "getListingUpdates": {
-      fgLog("getListingUpdates foreground:", msg.functionName, msg.data);
+      fgLog("getListingUpdates foreground:", msg.functionName, msg.data, "hl");
+      addListingUpdatesToDom(msg.data);
       break;
     }
     default:

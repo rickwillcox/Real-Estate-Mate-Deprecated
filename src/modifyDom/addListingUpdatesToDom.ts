@@ -1,46 +1,52 @@
 import { UpdateEvent } from "../interfaces";
+import { bgLog, fgLog, listingUpdatesElement } from "../utils";
+import { fadeInElement } from "./fadeInElement";
 
 export function addListingUpdatesToDom(listingUpdates: {
   [key: string]: UpdateEvent[];
 }) {
-  // const container = document.getElementsByClassName(
-  //   "rem-listing-updates"
-  // )[0];
-  // // Create the timeline element
-  // const timeline = document.createElement("div");
-  // // timeline.classList.add("timeline");
-  // container.appendChild(timeline);
-  // // Create a line to indicate the timeline
-  // const timelineLine = document.createElement("div");
-  // // timelineLine.classList.add("timeline-line");
-  // timeline.appendChild(timelineLine);
-  // let groupSide = "left"; // Keep track of which side the group should be on
-  // for (const [date, updates] of Object.entries(listingUpdates)) {
-  //   const group = document.createElement("div");
-  //   const dateHeader = document.createElement("div");
-  //   dateHeader.className = "mystyle";
-  //   dateHeader.textContent = date;
-  //   group.appendChild(dateHeader);
-  //   updates.forEach(
-  //     (update: {
-  //       updatedField: string;
-  //       updatedValue: string;
-  //       lastValue: any;
-  //     }) => {
-  //       const updateLine = document.createElement("p");
-  //       updateLine.style.fontSize = "10px";
-  //       const updatedField = document.createElement("strong");
-  //       updatedField.textContent = update.updatedField + ": ";
-  //       updateLine.appendChild(updatedField);
-  //       updateLine.appendChild(document.createTextNode(update.updatedValue));
-  //       if (update.lastValue) {
-  //         updateLine.appendChild(
-  //           document.createTextNode(` (previously: ${update.lastValue})`)
-  //         );
-  //       }
-  //       group.appendChild(updateLine);
-  //     }
-  //   );
-  //   timeline.appendChild(group);
-  // }
+  bgLog(listingUpdates, "hl");
+  console.log(listingUpdates);
+  let listingUpdatesHtml = "";
+  for (const [date, events] of Object.entries(listingUpdates)) {
+    listingUpdatesHtml += `<li class="rem-event" data-date="${
+      date.split(" ")[0]
+    }">`;
+    for (const event of events) {
+      listingUpdatesHtml += `<p data-label="${event.updatedField}:"> </br>${event.updatedValue}</p>`;
+    }
+    listingUpdatesHtml += `</li>`;
+  }
+
+  // add the below show all and toggleShowAll to a script tag on the document
+  let showAll = false;
+  function toggleShowAll() {
+    const showAllButton = document.getElementsByClassName("show-all-button")[0];
+    showAll = !showAll;
+    showAllButton.innerHTML = showAll ? "▲" : "▼";
+    const timeline = document.getElementsByClassName("rem-timeline")[0];
+    timeline.classList.toggle("expand");
+  }
+
+  const totalUpdates = Object.keys(listingUpdates).length;
+  listingUpdatesElement().innerHTML = `
+  <h1>Listing Timeline: ${
+    totalUpdates
+      ? `(${totalUpdates}) 
+      <button class="show-all-button">▼</button>
+      `
+      : `<span class="rem-no-updates">No Updates</span>`
+  }</h1>
+  <ul class="rem-timeline">
+    ${listingUpdatesHtml}
+  </ul>
+    `;
+  bgLog("after");
+
+  const showAllButton = document.getElementsByClassName("show-all-button")[0];
+  if (showAllButton) {
+    showAllButton.addEventListener("click", toggleShowAll);
+  }
+
+  fadeInElement(listingUpdatesElement());
 }

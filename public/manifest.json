@@ -17,7 +17,7 @@
   ],
   "content_scripts": [
     {
-      "css": ["mainContainerStyles.css", "animations.css"],
+      "css": ["mainContainerStyles.css", "animations.css", "timeline.css"],
       "js": [
         "foreground.js",
         "modifyDom/index.js",

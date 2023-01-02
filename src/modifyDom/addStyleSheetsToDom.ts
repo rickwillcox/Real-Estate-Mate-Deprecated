@@ -2,7 +2,11 @@ import { fgLog } from "../utils";
 
 export function addStyleSheetsToDom() {
   fgLog("addStyleSheetsToDom start");
-  const cssFiles = ["mainContainerStyles.css", "animations.css"];
+  const cssFiles = [
+    "mainContainerStyles.css",
+    "animations.css",
+    "timeline.css",
+  ];
   cssFiles.forEach((cssFile) => {
     const linkElement = document.createElement("link");
     linkElement.rel = "stylesheet";

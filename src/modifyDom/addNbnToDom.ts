@@ -78,7 +78,7 @@ export function addNbnToDom(data: {
         ? `${lowerSpeed} - ${upperSpeed} mbps`
         : `${speedDisplay} mbps`;
     internetSpeedElement().style.color =
-      speedDisplay < 25 ? "red" : speedDisplay < 50 ? "orange" : "green";
+      speedDisplay < 25 ? "red" : speedDisplay < 50 ? "orange" : "#32CD32";
   }
   if (primaryAccessTechnology) {
     internetPrimaryAccessTechnologyElement().innerHTML =
@@ -87,10 +87,12 @@ export function addNbnToDom(data: {
   }
 
   internetCoExistanceElement().innerHTML = coExistance ? "Yes" : "No";
-  internetCoExistanceElement().style.color = coExistance ? "red" : "green";
+  internetCoExistanceElement().style.color = coExistance ? "red" : "#32CD32";
 
   internetCoExistanceFaceElement().innerHTML = coExistance ? "  :(" : "  :)";
-  internetCoExistanceFaceElement().style.color = coExistance ? "red" : "green";
+  internetCoExistanceFaceElement().style.color = coExistance
+    ? "red"
+    : "#32CD32";
 
   fgLog("addNbnToDom end");
 }

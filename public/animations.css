@@ -18,3 +18,19 @@
     transform: scale(0.8);
   }
 }
+
+@keyframes expand {
+  from {
+    height: 0;
+    visibility: hidden;
+  }
+  to {
+    height: auto;
+    visibility: visible;
+  }
+}
+
+.expand {
+  overflow: hidden;
+  animation: expand 1s;
+}
