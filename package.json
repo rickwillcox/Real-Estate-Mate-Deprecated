@@ -21,6 +21,7 @@
   "homepage": "https://github.com/RickWillcox/Real-Estate-Mate#readme",
   "devDependencies": {
     "@types/chrome": "^0.0.206",
+    "@types/jquery": "^3.5.16",
     "copy-webpack-plugin": "^11.0.0",
     "css-loader": "^6.7.3",
     "html-loader": "^4.2.0",
@@ -31,6 +32,7 @@
     "webpack-cli": "^5.0.1"
   },
   "dependencies": {
-    "glob": "^8.0.3"
+    "glob": "^8.0.3",
+    "jquery": "^3.6.3"
   }
 }

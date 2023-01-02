@@ -1,12 +1,12 @@
 import { UpdateEvent } from "../interfaces";
-import { bgLog, fgLog, listingUpdatesElement } from "../utils";
+import { bgLog, listingUpdatesElement } from "../utils";
 import { fadeInElement } from "./fadeInElement";
+import $ from "jquery";
 
 export function addListingUpdatesToDom(listingUpdates: {
   [key: string]: UpdateEvent[];
 }) {
   bgLog(listingUpdates, "hl");
-  console.log(listingUpdates);
   let listingUpdatesHtml = "";
   for (const [date, events] of Object.entries(listingUpdates)) {
     listingUpdatesHtml += `<li class="rem-event" data-date="${
@@ -18,14 +18,13 @@ export function addListingUpdatesToDom(listingUpdates: {
     listingUpdatesHtml += `</li>`;
   }
 
-  // add the below show all and toggleShowAll to a script tag on the document
   let showAll = false;
   function toggleShowAll() {
     const showAllButton = document.getElementsByClassName("show-all-button")[0];
     showAll = !showAll;
     showAllButton.innerHTML = showAll ? "▲" : "▼";
     const timeline = document.getElementsByClassName("rem-timeline")[0];
-    timeline.classList.toggle("expand");
+    $(timeline).slideToggle("fast");
   }
 
   const totalUpdates = Object.keys(listingUpdates).length;
@@ -41,7 +40,6 @@ export function addListingUpdatesToDom(listingUpdates: {
     ${listingUpdatesHtml}
   </ul>
     `;
-  bgLog("after");
 
   const showAllButton = document.getElementsByClassName("show-all-button")[0];
   if (showAllButton) {

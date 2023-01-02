@@ -24,7 +24,8 @@
         "interfaces/index.js",
         "utils/index.js",
         "stores/index.js",
-        "containers/index.js"
+        "containers/index.js",
+        "lib/jquery-3.5.1.min.js"
       ],
       "matches": ["https://www.realestate.com.au/property*"]
     }

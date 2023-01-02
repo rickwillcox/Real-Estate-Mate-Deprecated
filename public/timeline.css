@@ -11,7 +11,7 @@
   text-align: left;
   font-weight: 100;
   max-width: 80%;
-  height: 0;
+  display: block;
 }
 
 .rem-timeline h1 {
