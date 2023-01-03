@@ -51,7 +51,7 @@ function getInternetElementInner() {
   return function () {
     if (!internetElementInner) {
       internetElementInner = document.getElementsByClassName(
-        "rem-internet-est-inner"
+        "rem-internet-not-available"
       )[0] as HTMLAnchorElement;
     }
     return internetElementInner;
@@ -186,6 +186,42 @@ function getPriceInfoElement() {
   };
 }
 
+function getBankLoadingElement() {
+  let bankLoadingElement: HTMLElement;
+  return function () {
+    if (!bankLoadingElement) {
+      bankLoadingElement = document.getElementsByClassName(
+        "rem-bank-loading"
+      )[0] as HTMLElement;
+    }
+    return bankLoadingElement;
+  };
+}
+
+function getInternetLoadingElement() {
+  let internetLoadingElement: HTMLElement;
+  return function () {
+    if (!internetLoadingElement) {
+      internetLoadingElement = document.getElementsByClassName(
+        "rem-internet-loading"
+      )[0] as HTMLElement;
+    }
+    return internetLoadingElement;
+  };
+}
+
+function getListingUpdatesLoadingElement() {
+  let listingUpdatesLoadingElement: HTMLElement;
+  return function () {
+    if (!listingUpdatesLoadingElement) {
+      listingUpdatesLoadingElement = document.getElementsByClassName(
+        "rem-listing-updates-loading"
+      )[0] as HTMLElement;
+    }
+    return listingUpdatesLoadingElement;
+  };
+}
+
 export const internetPrimaryAccessTechnologyElement =
   getInternetPrimaryAccessTechnologyElement();
 
@@ -220,3 +256,9 @@ export const listingUpdatesElement = getListingUpdatesElement();
 export const logoElement = getLogoElement();
 
 export const priceInfoElement = getPriceInfoElement();
+
+export const bankLoadingElement = getBankLoadingElement();
+
+export const internetLoadingElement = getInternetLoadingElement();
+
+export const listingUpdatesLoadingElement = getListingUpdatesLoadingElement();

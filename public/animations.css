@@ -18,3 +18,26 @@
     transform: scale(0.8);
   }
 }
+
+@keyframes rem-fade {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  33% {
+    opacity: 1;
+  }
+  66% {
+    opacity: 1;
+  }
+}
+
+.rem-dot:nth-child(1) {
+  animation-delay: 0s;
+}
+.rem-dot:nth-child(2) {
+  animation-delay: 0.3s;
+}
+.rem-dot:nth-child(3) {
+  animation-delay: 0.6s;
+}

@@ -12,6 +12,9 @@
   font-weight: 100;
   max-width: 80%;
   display: block;
+  visibility: hidden;
+  height: 0;
+  opacity: 0;
 }
 
 .rem-timeline h1 {

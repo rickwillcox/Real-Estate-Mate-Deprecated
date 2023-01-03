@@ -1,15 +1,14 @@
 import { foregroundStore } from "../stores";
 import {
-  fgLog,
   internetCoExistanceElement,
   internetCoExistanceFaceElement,
-  internetElement,
   internetElementInner,
   internetListElement,
+  internetLoadingElement,
   internetPrimaryAccessTechnologyElement,
   internetSpeedElement,
 } from "../utils";
-import { fadeInElement } from ".";
+import { fadeInElement, fadeOutElement } from ".";
 
 export function addNbnToDom(data: {
   primaryAccessTechnology: any;
@@ -18,19 +17,16 @@ export function addNbnToDom(data: {
   upperSpeed: any;
   networkCoexistence: string;
 }) {
-  fgLog("addNbnToDom start", data);
   const { setState } = foregroundStore;
   setState({ nbnDataComplete: true });
-  fadeInElement(internetElement());
+
   if (!data) {
     if (!internetElementInner()) {
-      fgLog("addNbnToDom early return (!internetElement) end");
       return;
     }
-    internetElementInner().style.visibility = "visible";
-    internetListElement().style.visibility = "hidden";
-    internetListElement().style.height = "0px";
-    fgLog("addNbnToDom early return (!data) end");
+    fadeInElement(internetElementInner());
+    fadeOutElement(internetListElement());
+    internetLoadingElement().remove();
     return;
   }
   let primaryAccessTechnology = data.primaryAccessTechnology;
@@ -94,5 +90,10 @@ export function addNbnToDom(data: {
     ? "red"
     : "#32CD32";
 
-  fgLog("addNbnToDom end");
+  internetLoadingElement().remove();
+  fadeInElement(internetCoExistanceFaceElement());
+  fadeInElement(internetCoExistanceElement());
+  fadeInElement(internetPrimaryAccessTechnologyElement());
+  fadeInElement(internetSpeedElement());
+  fadeInElement(internetListElement());
 }

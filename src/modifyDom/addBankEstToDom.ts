@@ -1,9 +1,9 @@
 import { foregroundStore } from "../stores";
-import { bankEstElement, bankEstElementInner, fgLog } from "../utils";
+import { bankEstElementInner, bankLoadingElement } from "../utils";
 import { fadeInElement } from "./fadeInElement";
+import { fadeOutElement } from "./fadeOutElement";
 
 export function addBankEstToDom(data: any[]) {
-  fgLog("addBankEstToDom start", data);
   const estimate = data[0];
   const domainId = data[1];
   const { getState, setState } = foregroundStore;
@@ -19,6 +19,6 @@ export function addBankEstToDom(data: any[]) {
     estimate === null ? "Not Available" : "$" + estimate;
   bankEstElementInner().href = link;
 
-  fadeInElement(bankEstElement());
-  fgLog("addBankEstToDom end");
+  fadeOutElement(bankLoadingElement());
+  fadeInElement(bankEstElementInner());
 }

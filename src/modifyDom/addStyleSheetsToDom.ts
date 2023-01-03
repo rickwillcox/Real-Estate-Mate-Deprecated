@@ -1,7 +1,4 @@
-import { fgLog } from "../utils";
-
 export function addStyleSheetsToDom() {
-  fgLog("addStyleSheetsToDom start");
   const cssFiles = [
     "mainContainerStyles.css",
     "animations.css",
@@ -12,8 +9,6 @@ export function addStyleSheetsToDom() {
     linkElement.rel = "stylesheet";
     linkElement.type = "text/css";
     linkElement.href = chrome.runtime.getURL(cssFile);
-    fgLog(linkElement);
     document.head.appendChild(linkElement);
   });
-  fgLog("addStyleSheetsToDom end");
 }

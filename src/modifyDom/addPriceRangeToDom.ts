@@ -1,15 +1,13 @@
 import { fadeInElement } from ".";
-import { fgLog, priceRangeElement, priceRangeInnerElement } from "../utils";
+import { priceRangeInnerElement } from "../utils";
 
 export function addPriceRangeToDom(backgroundFunctions: any) {
-  fgLog("addPriceRangeToDom start", backgroundFunctions);
   const regex =
     /marketing_price_range\\\\\\\\\\\\\\":\\\\\\\\\\\\\\"(.*?)\\\\\\\\\\\\\\"/;
   const matches = document.documentElement.innerHTML.match(regex);
 
   if (matches === null) {
     priceRangeInnerElement().innerHTML = `No price range available`;
-    fgLog("addPriceRangeToDom early return (matches === null) end");
     return;
   }
   priceRangeInnerElement().innerHTML = `${matches[1].replace("_", " - ")}`;
@@ -23,6 +21,5 @@ export function addPriceRangeToDom(backgroundFunctions: any) {
     backgroundFunctions.updateBackend.args.maxPrice = split_price[0];
   }
 
-  fadeInElement(priceRangeElement());
-  fgLog("addPriceRangeToDom end");
+  fadeInElement(priceRangeInnerElement());
 }
