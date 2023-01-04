@@ -1,12 +1,38 @@
-import { mainContainer } from "../containers";
+import {
+  addBankEstToDom,
+  addLoadingDotsToDom,
+  addLogoToDom,
+  addPriceRangeToDom,
+} from ".";
+import { internetListContainer, mainContainerInitalSetup } from "../containers";
+import { backgroundFunctionsStore } from "../stores/backgroundFunctionsStore";
 import {
   realEstateMateElement,
   propertyInfoMiddleContentElement,
+  mainContainerTitleElement,
+  logoElement,
+  internetElement,
 } from "../utils";
 
-export async function addRealEstateMateContainer() {
+const { getState: bgfGetState, setState: bgfSetState } =
+  backgroundFunctionsStore;
+
+export async function addRealEstateMateContainer(html: string) {
   if (realEstateMateElement()) {
     realEstateMateElement().remove();
   }
-  propertyInfoMiddleContentElement().innerHTML += mainContainer;
+  // add container
+  propertyInfoMiddleContentElement().innerHTML += html;
+
+  addLogoToDom();
+
+  addPriceRangeToDom(bgfGetState().backgroundFunctions);
+
+  addLoadingDotsToDom();
+
+  internetElement().innerHTML += internetListContainer;
+
+  // add internet
+
+  // add listing updates
 }

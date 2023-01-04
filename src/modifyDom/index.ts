@@ -7,3 +7,6 @@ export * from "./addListingUpdatesToDom";
 export * from "./spinLogo";
 export * from "./fadeInElement";
 export * from "./fadeOutElement";
+export * from "./TestComponent";
+export * from "./addLogoToDom";
+export * from "./addLoadingDotsToDom";

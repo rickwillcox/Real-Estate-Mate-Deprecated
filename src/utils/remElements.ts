@@ -222,6 +222,18 @@ function getListingUpdatesLoadingElement() {
   };
 }
 
+function getMainContainerTitleElement() {
+  let mainContainerTitleElement: HTMLElement;
+  return function () {
+    if (!mainContainerTitleElement) {
+      mainContainerTitleElement = document.getElementsByClassName(
+        "rem-title"
+      )[0] as HTMLElement;
+    }
+    return mainContainerTitleElement;
+  };
+}
+
 export const internetPrimaryAccessTechnologyElement =
   getInternetPrimaryAccessTechnologyElement();
 
@@ -262,3 +274,5 @@ export const bankLoadingElement = getBankLoadingElement();
 export const internetLoadingElement = getInternetLoadingElement();
 
 export const listingUpdatesLoadingElement = getListingUpdatesLoadingElement();
+
+export const mainContainerTitleElement = getMainContainerTitleElement();

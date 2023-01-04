@@ -20,6 +20,5 @@ export function addPriceRangeToDom(backgroundFunctions: any) {
     backgroundFunctions.updateBackend.args.minPrice = split_price[0];
     backgroundFunctions.updateBackend.args.maxPrice = split_price[0];
   }
-
   fadeInElement(priceRangeInnerElement());
 }

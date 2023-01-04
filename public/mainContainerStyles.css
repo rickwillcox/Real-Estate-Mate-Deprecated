@@ -31,9 +31,9 @@
 .rem-internet-list-co-existance-face {
   font-size: 18px;
   font-weight: 400;
-  height: 0;
-  visibility: hidden;
-  opacity: 0;
+  height: auto;
+  visibility: visible;
+  opacity: 1;
   transition: opacity 1s ease-in-out;
 }
 

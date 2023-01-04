@@ -50,6 +50,12 @@ const backgroundFunctionsStore = create<BackgroundFunctionsStore>((set) => ({
         tabId: 0,
       },
     },
+    getTestComponent: {
+      name: "getTestComponent",
+      args: {
+        tabId: 0,
+      },
+    },
   },
   setTabId: (tabId: number) =>
     set((state) => {

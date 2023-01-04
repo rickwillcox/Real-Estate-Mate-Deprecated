@@ -4,7 +4,7 @@ const glob = require("glob");
 module.exports = {
   mode: "production",
   entry: glob
-    .sync(path.resolve(__dirname, "..", "src", "**", "*.ts"))
+    .sync(path.resolve(__dirname, "..", "src", "**", "*.ts*"))
     .reduce((entries, entry) => {
       entries[path.relative(path.resolve(__dirname, "..", "src"), entry)] =
         entry;
@@ -13,16 +13,16 @@ module.exports = {
   output: {
     path: path.join(__dirname, "../dist"),
     filename: (pathData) => {
-      return pathData.chunk.name.replace(/\.ts$/, ".js");
+      return pathData.chunk.name.replace(/\.(ts|tsx)$/, ".js");
     },
   },
   resolve: {
-    extensions: [".ts", ".js"],
+    extensions: [".ts", ".tsx", ".js"],
   },
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
+        test: /\.(ts|tsx)$/,
         loader: "ts-loader",
         exclude: /node_modules/,
       },

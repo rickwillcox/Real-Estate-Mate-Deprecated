@@ -35,8 +35,8 @@
   },
   "web_accessible_resources": [
     {
-      "matches": ["https://www.realestate.com.au/*"],
-      "resources": ["logo/logo-128.png"]
+      "matches": ["http://*/*", "https://*/*"],
+      "resources": ["logo/logo-128.png", "bankEstimate.html"]
     }
   ]
 }

@@ -3,8 +3,8 @@ import { internetListContainer } from ".";
 const logoData = {
   src: chrome.runtime.getURL("/logo/logo-128.png"),
   alt: "logo",
-  height: "50",
-  width: "50",
+  height: 50,
+  width: 50,
 };
 
 const titleText = "Real Estate Mate";
@@ -23,9 +23,21 @@ const loadingAnimation = `
   </span>
 `;
 
-function genLoadingSpan(className: string) {
+export function genLoadingSpan(className: string) {
   return `<span class="${className}">${loadingAnimation}</span>`;
 }
+
+export const mainContainerInitalSetup = {
+  logoData,
+  titleText,
+  priceRangeText,
+  bankEstText,
+  internetText,
+  internetDefaultLink,
+  listingUpdatesText,
+  loadingAnimation,
+  genLoadingSpan,
+};
 
 const mainContainer = `
   <div class="real-estate-mate">

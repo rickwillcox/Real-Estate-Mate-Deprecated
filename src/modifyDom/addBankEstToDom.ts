@@ -18,7 +18,9 @@ export function addBankEstToDom(data: any[]) {
   bankEstElementInner().innerHTML =
     estimate === null ? "Not Available" : "$" + estimate;
   bankEstElementInner().href = link;
-
-  fadeOutElement(bankLoadingElement());
-  fadeInElement(bankEstElementInner());
+  // bankLoadingElement().remove();
+  // fadeInElement(bankEstElementInner());
+  bankEstElementInner().style.visibility = "visible";
+  bankEstElementInner().style.opacity = "1";
+  bankEstElementInner().style.height = "auto";
 }

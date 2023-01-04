@@ -38,4 +38,10 @@ export interface FgToBgFunctions {
       tabId: number;
     };
   };
+  getTestComponent: {
+    name: "getTestComponent";
+    args: {
+      tabId: number;
+    };
+  };
 }

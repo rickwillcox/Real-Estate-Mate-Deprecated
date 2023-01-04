@@ -22,10 +22,12 @@ export function addNbnToDom(data: {
 
   if (!data) {
     if (!internetElementInner()) {
+      console.log("no inner element");
       return;
     }
+    console.log("no data");
     fadeInElement(internetElementInner());
-    fadeOutElement(internetListElement());
+    // fadeOutElement(internetListElement());
     internetLoadingElement().remove();
     return;
   }
@@ -91,6 +93,7 @@ export function addNbnToDom(data: {
     : "#32CD32";
 
   internetLoadingElement().remove();
+  console.log("after remove");
   fadeInElement(internetCoExistanceFaceElement());
   fadeInElement(internetCoExistanceElement());
   fadeInElement(internetPrimaryAccessTechnologyElement());

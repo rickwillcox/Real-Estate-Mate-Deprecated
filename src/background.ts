@@ -125,6 +125,25 @@ chrome.runtime.onMessage.addListener(function async(
   processForegroundFunction(func);
 });
 
+async function injectHTML() {
+  // Read the contents of the file
+  console.log("injectHTML BEFORE");
+
+  const response = await fetch(chrome.runtime.getURL("mainContainer.html"));
+  console.log("injectHTML AFTER REQUEST");
+
+  if (response.ok) {
+    const html = await response.text();
+    console.log("injectHTML READY", html);
+
+    return html;
+    // Inject the HTML into the page
+  } else {
+    console.error("injectHTML ERROR", response.statusText);
+  }
+  console.log("injectHTML END");
+}
+
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   if (changeInfo.status === "complete") {
     const msg: { functionName?: string; data?: any } = {};
@@ -132,6 +151,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     msg.data = tab.id;
     try {
       // chrome.tabs.sendMessage(tab.id, msg);
+
       chrome.tabs.sendMessage(tabId, msg);
     } catch {
       throw new Error("Failed to send message to tab");
@@ -174,7 +194,12 @@ async function processForegroundFunction(func: any) {
       msg.data = await getListingUpdatesHelper(func.args.address);
       console.log("listing updates background after fetch", msg.data);
       chrome.tabs.sendMessage(func.args.tabId, msg);
-
+      break;
+    }
+    case "getTestComponent": {
+      msg.functionName = func.name;
+      msg.data = await injectHTML();
+      chrome.tabs.sendMessage(func.args.tabId, msg);
       break;
     }
     default:
