@@ -10,6 +10,10 @@ Your best mate whilst looking for houses to buy on realestate.com.au
 - Show Commonwealth Bank evaluation
 - Show Internet data
 
+## Upcoming:
+
+- Listing history (user driven)
+
 ## Contact:
 
 Email: [realestatemate.au@gmail.com](mailto:realestatemate.au@gmail.com)
