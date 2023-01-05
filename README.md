@@ -1,4 +1,4 @@
-![logo](/logo/logo-128.png)
+![logo](public/logo/logo-128.png)
 
 # Real Estate Mate
 
